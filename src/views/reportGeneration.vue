@@ -8,13 +8,20 @@
       </el-row>
     </el-col>
     <el-col :span="5">
-      <el-text size="small">项目编号</el-text>
-      <el-input v-model="searchProjectData.id" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
-        size="small" />
+      <el-row>
+      <el-text size="small" style="margin-right: 10px;">查询方式</el-text>
+      <el-select-v2
+        v-model="queryType"
+        placeholder="请选择查询方式"
+        :options="options"
+        size="small"
+        :style="{ width: smallScreen ? '120px' : '200px' ,}"
+      />
+    </el-row>
     </el-col>
-    <el-col :span="5">
-      <el-text size="small">项目名称</el-text>
-      <el-input v-model="searchProjectData.name" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
+      <el-col :span="5">
+        <el-text size="small">查询参数</el-text>
+      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词"
         size="small" />
     </el-col>
     <el-col :span="4">
@@ -26,7 +33,6 @@
       </el-row>
     </el-col>
   </el-row>
-
   <el-table :data="ProjectTableData" style="width: 100%">
     <el-table-column type="selection" label="选择" align="center" />
     <el-table-column prop="id" label="项目编号" align="center" />
@@ -66,6 +72,7 @@ import { ElMessageBox } from 'element-plus'
 export default defineComponent({
   name: 'ProjectGenerationComponent',
   setup() {
+    const smallScreen = ref(window.innerWidth < 768);
     let ProjectTableData = ref<Project[]>([{
       id: 1,
       name: '1'
@@ -75,10 +82,7 @@ export default defineComponent({
       name: '1'
     }])
 
-    let searchProjectData = ref<Project>({
-      id: 0,
-      name: ''
-    })
+    let searchProp = ref()
     const currentPage1 = ref(5)
     const size = ref<ComponentSize>('default')
     const background = ref(false)
@@ -86,6 +90,14 @@ export default defineComponent({
     const router = useRouter();
     const drawer = ref(false)
     const direction = ref<DrawerProps['direction']>('rtl')
+    const queryType=ref()
+    const options=ref([{
+      label:'项目编号',
+      value:'id'
+    },{
+      label:'项目名称',
+      value:'name'
+    }])
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
@@ -94,10 +106,13 @@ export default defineComponent({
     }
     function searchProject() {
       console.log("搜索===》")
-
+      console.log(queryType.value)
+      console.log(searchProp.value)
     }
     function reset() {
       console.log("重置")
+      queryType.value=null;
+      searchProp.value=null;
     }
     function handlePreview(row: any) {
       console.log('预览')
@@ -117,13 +132,16 @@ export default defineComponent({
       Search,
       RefreshLeft,
       ProjectTableData,
-      searchProjectData,
+      searchProp,
       drawer,
       direction,
       currentPage1,
       size,
       disabled,
       background,
+      queryType,
+      options,
+      smallScreen,
       searchProject,
       reset,
       handlePreview,

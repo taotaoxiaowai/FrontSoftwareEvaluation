@@ -1,22 +1,23 @@
 <template>
     <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
-        <el-col :span="2">
-            <el-row>
-                <div>
-                    <el-button size="small" type="primary" @click="searchProject()" :icon="Files">批量生成</el-button>
-                </div>
-            </el-row>
-        </el-col>
+       
         <el-col :span="5">
-            <el-text size="small">项目编号</el-text>
-            <el-input v-model="searchProjectData.id" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
-                size="small" />
-        </el-col>
-        <el-col :span="5">
-            <el-text size="small">项目名称</el-text>
-            <el-input v-model="searchProjectData.name" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
-                size="small" />
-        </el-col>
+      <el-row>
+      <el-text size="small" style="margin-right: 10px;">查询方式</el-text>
+      <el-select-v2
+        v-model="queryType"
+        placeholder="请选择查询方式"
+        :options="options"
+        size="small"
+        :style="{ width: smallScreen ? '120px' : '200px' ,}"
+      />
+    </el-row>
+    </el-col>
+      <el-col :span="5">
+        <el-text size="small">查询参数</el-text>
+      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词"
+        size="small" />
+    </el-col>
         <el-col :span="4">
             <el-row>
                 <div>
@@ -64,16 +65,24 @@ export default defineComponent({
             id: 2,
             name: '1'
         }])
-
-        let searchProjectData = ref<Project>({
-            id: 0,
-            name: ''
-        })
         const currentPage1 = ref(5)
         const size = ref<ComponentSize>('default')
         const background = ref(false)
         const disabled = ref(false)
         const router = useRouter();
+        const queryType=ref()
+        const options=ref([{
+      label:'项目编号',
+      value:'id'
+    },{
+      label:'项目名称',
+      value:'name'
+    }])
+   /*  window.addEventListener('resize', () => {
+      smallScreen.value = window.innerWidth < 768;
+    }); */
+    let searchProp = ref()
+    const smallScreen = ref(window.innerWidth < 768);
         const direction = ref<DrawerProps['direction']>('rtl')
         const handleSizeChange = (val: number) => {
             console.log(`${val} items per page`)
@@ -83,10 +92,13 @@ export default defineComponent({
         }
         function searchProject() {
             console.log("搜索===》")
-
+            console.log(queryType.value)
+            console.log(searchProp.value)
         }
         function reset() {
             console.log("重置")
+            queryType.value=null;
+      searchProp.value=null;
         }
         function handleDashBoardClick(row: any) {
             router.push({ name: 'dashboards', query: { projectId: row.id } });
@@ -98,12 +110,15 @@ export default defineComponent({
             Search,
             RefreshLeft,
             ProjectTableData,
-            searchProjectData,
             direction,
             currentPage1,
             size,
             disabled,
             background,
+            queryType,
+            options,
+            searchProp,
+            smallScreen,
             searchProject,
             reset,
             handleSizeChange,
@@ -120,7 +135,6 @@ h1 {
     text-align: center;
     margin-top: 20px;
 }
-
 .demo-pagination-block {
     display: flex;
     justify-content: flex-end;
