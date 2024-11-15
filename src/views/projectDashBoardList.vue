@@ -1,12 +1,6 @@
 <template>
     <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
-        <el-col :span="2">
-            <el-row>
-                <div>
-                    <el-button size="small" type="primary" @click="searchProject()" :icon="Files">批量生成</el-button>
-                </div>
-            </el-row>
-        </el-col>
+       
         <el-col :span="5">
             <el-text size="small">项目编号</el-text>
             <el-input v-model="searchProjectData.id" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
@@ -120,7 +114,6 @@ h1 {
     text-align: center;
     margin-top: 20px;
 }
-
 .demo-pagination-block {
     display: flex;
     justify-content: flex-end;
