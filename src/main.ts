@@ -13,7 +13,7 @@ import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 import '@/assets/styles/global.css';
-
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
 
 const app = createApp(App);
 
@@ -31,6 +31,8 @@ app.component('QuillEditor', QuillEditor);
 
 app.use(router);
 app.use(store);
-app.use(ElementPlus);
+app.use(ElementPlus, {
+    locale: zhCn,
+  });
 
 app.mount('#app');

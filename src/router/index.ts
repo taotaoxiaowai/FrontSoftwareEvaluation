@@ -24,7 +24,10 @@ const routes: Array<RouteRecordRaw> = [
         path:'/dashboards',
         name:'dashboards',
         component:() =>import('@/views/dashboards.vue'),
-        
+      },{
+        path:'/projectDashBoardList',
+        name:'projectDashBoardList',
+        component:()=>import('@/views/projectDashBoardList.vue')
       }
     ]
   },

@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col :span="2"><el-button :icon="Close" circle /></el-col>
+    <el-col :span="2"><el-button :icon="Close" circle @click="router.back()"/></el-col>
     <el-col :span="22"> 
     <donut-chart-component/>
     <histogram-chart-component/>
@@ -16,7 +16,7 @@ import {Close} from '@element-plus/icons-vue'
 import DonutChartComponent from '@/components/DonutChart.vue';
 import HistogramChartComponent from '@/components/HistogramChart.vue'
 import PieChartComponent from '@/components/PieChart.vue'
-import { useRoute } from 'vue-router';
+import { useRoute,useRouter } from 'vue-router';
   export default defineComponent({
     name: 'ProjectGenerationComponent',
     components: {
@@ -26,11 +26,14 @@ import { useRoute } from 'vue-router';
   },
     setup() {
      const route=useRoute()
+     const router=useRouter()
      const {projectId}= route.query
-      console.log('项目id',projectId)
+     console.log('项目id',projectId)
+    
       return {
         projectId,
-        Close
+        Close,
+        router
       };
     }
   });

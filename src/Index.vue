@@ -9,8 +9,7 @@
             placement="bottom"
             width="200"
             trigger="click"
-            v-model:visible="popoverVisible"
-        >
+            v-model:visible="popoverVisible">
           <template #reference>
             <el-avatar class="user-avatar" size="large" :src="userAvatar"/>
           </template>
@@ -38,9 +37,10 @@
           <el-menu-item index="reportGeneration" @click="openTab('reportGeneration')">
             <el-icon><User /></el-icon> 报告生成
           </el-menu-item>
-          <el-menu-item index="dashboards" @click="openTab('dashboards')">
-            <el-icon><User /></el-icon> 数据看板
+          <el-menu-item index="projectDashBoardList" @click="openTab('projectDashBoardList')">
+            <el-icon><User /></el-icon> 看板列表
           </el-menu-item>
+          
         </el-menu>
       </aside>
       <main class="content">
@@ -86,8 +86,8 @@ export default defineComponent({
           return '界面一';
         case 'reportGeneration':
           return '报告生成';
-        case 'dashboards':
-          return '数据看板'
+          case 'projectDashBoardList':
+          return '看板列表';
         default:
           return tabName;
       }
