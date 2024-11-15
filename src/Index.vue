@@ -34,13 +34,18 @@
           <el-menu-item index="course" @click="openTab('course')">
             <el-icon><Setting /></el-icon> 界面一
           </el-menu-item>
-          <el-menu-item index="reportGeneration" @click="openTab('reportGeneration')">
-            <el-icon><User /></el-icon> 报告生成
-          </el-menu-item>
-          <el-menu-item index="projectDashBoardList" @click="openTab('projectDashBoardList')">
-            <el-icon><User /></el-icon> 看板列表
-          </el-menu-item>
-          
+          <el-sub-menu index="1">
+            <template #title>
+              <el-icon>
+                <User></User>
+              </el-icon>
+              <span>报告生成子系统</span>
+            </template >
+            <el-menu-item-group>
+              <el-menu-item index="reportGeneration" @click="openTab('reportGeneration')">报告生成</el-menu-item>
+              <el-menu-item index="reportGenerationChild" @click="openTab('projectDashBoardList')">看板列表</el-menu-item>
+            </el-menu-item-group>
+          </el-sub-menu>
         </el-menu>
       </aside>
       <main class="content">
@@ -86,7 +91,7 @@ export default defineComponent({
           return '界面一';
         case 'reportGeneration':
           return '报告生成';
-          case 'projectDashBoardList':
+        case 'projectDashBoardList':
           return '看板列表';
         default:
           return tabName;
