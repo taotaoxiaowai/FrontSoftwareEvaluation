@@ -43,7 +43,7 @@
             </template >
             <el-menu-item-group>
               <el-menu-item index="reportGeneration" @click="openTab('reportGeneration')">报告生成</el-menu-item>
-              <el-menu-item index="reportGenerationChild" @click="openTab('projectDashBoardList')">看板列表</el-menu-item>
+              <el-menu-item index="projectDashBoardList" @click="openTab('projectDashBoardList')">看板列表</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
         </el-menu>

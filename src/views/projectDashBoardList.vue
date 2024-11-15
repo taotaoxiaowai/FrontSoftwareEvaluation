@@ -92,10 +92,13 @@ export default defineComponent({
         }
         function searchProject() {
             console.log("搜索===》")
-
+            console.log(queryType.value)
+            console.log(searchProp.value)
         }
         function reset() {
             console.log("重置")
+            queryType.value=null;
+      searchProp.value=null;
         }
         function handleDashBoardClick(row: any) {
             router.push({ name: 'dashboards', query: { projectId: row.id } });
