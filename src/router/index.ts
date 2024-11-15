@@ -28,6 +28,14 @@ const routes: Array<RouteRecordRaw> = [
         path:'/projectDashBoardList',
         name:'projectDashBoardList',
         component:()=>import('@/views/projectDashBoardList.vue')
+      },{
+        path:'/reportReview',
+        name:'reportReview',
+        component:()=>import('@/views/reportReview.vue')
+      },{
+        path:'/reportReviewEvaluation',
+        name:'reportReviewEvaluation',
+        component:()=>import('@/views/reportReviewEvaluation.vue')
       }
     ]
   },

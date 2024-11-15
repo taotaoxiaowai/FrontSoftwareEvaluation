@@ -10,12 +10,12 @@
     <el-col :span="5">
       <el-text size="small">项目编号</el-text>
       <el-input v-model="searchProjectData.id" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
-        size="small" />
+                size="small" />
     </el-col>
     <el-col :span="5">
       <el-text size="small">项目名称</el-text>
       <el-input v-model="searchProjectData.name" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
-        size="small" />
+                size="small" />
     </el-col>
     <el-col :span="4">
       <el-row>
@@ -28,32 +28,27 @@
   </el-row>
 
   <el-table :data="ProjectTableData" style="width: 100%">
-    <el-table-column type="selection" label="选择" align="center" />
     <el-table-column prop="id" label="项目编号" align="center" />
     <el-table-column prop="name" label="项目名称" align="center">
     </el-table-column>
+    <el-table-column prop="name" label="项目状态" align="center">
+    </el-table-column>
     <el-table-column fixed="right" label="操作" min-width="60" align="center">
       <template #default="scope">
-        <el-tooltip content="预览报告" effect="light" placement="top">
-          <el-button type="primary" :icon="Search" @click="handlePreview(scope.row); drawer = true"
-          style="margin-right: 10px;" circle/>
+        <el-tooltip content="查看评估反馈" effect="light" placement="top">
+          <el-button type="primary" :icon="Search" circle style="margin-right: 10px;"
+                     @click="handlePreview(scope.row); drawer = true" />
         </el-tooltip>
-        <el-tooltip content="生成并下载报告" effect="light" placement="top">
-           <el-button type="danger" :icon="Document" circle style="margin-right: 10px;"/></el-tooltip>
-          
-        
       </template>
     </el-table-column>
   </el-table>
   <div class="demo-pagination-block">
     <el-pagination v-model:current-page="currentPage1" :page-size="100" :size="size" :disabled="disabled"
-      :background="background" layout="total, prev, next" :total="1000" @size-change="handleSizeChange"
-      @current-change="handleCurrentChange" />
-    <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="800">
+                   :background="background" layout="total, prev, next" :total="1000" @size-change="handleSizeChange"
+                   @current-change="handleCurrentChange" />
+    <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="500">
       <span>Hi, there!</span>
     </el-drawer>
-
-
   </div>
 </template>
 <script lang="ts">
@@ -61,19 +56,18 @@ import { defineComponent, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files } from '@element-plus/icons-vue'
-import type { ComponentSize, DrawerProps } from 'element-plus'
-import { ElMessageBox } from 'element-plus'
+import {ComponentSize, DrawerProps, ElMessageBox} from 'element-plus'
 export default defineComponent({
-  name: 'ProjectGenerationComponent',
+  name: 'ProjectDashBoardListComponent',
   setup() {
     let ProjectTableData = ref<Project[]>([{
       id: 1,
       name: '1'
     },
-    {
-      id: 2,
-      name: '1'
-    }])
+      {
+        id: 2,
+        name: '1'
+      }])
 
     let searchProjectData = ref<Project>({
       id: 0,
@@ -83,8 +77,8 @@ export default defineComponent({
     const size = ref<ComponentSize>('default')
     const background = ref(false)
     const disabled = ref(false)
-    const router = useRouter();
     const drawer = ref(false)
+    const router = useRouter();
     const direction = ref<DrawerProps['direction']>('rtl')
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
@@ -99,17 +93,20 @@ export default defineComponent({
     function reset() {
       console.log("重置")
     }
+    function handleDashBoardClick(row: any) {
+      router.push({ name: 'dashboards', query: { projectId: row.id } });
+    }
     function handlePreview(row: any) {
-      console.log('预览')
+      console.log('项目评审')
     }
     const handleClose = (done: () => void) => {
-      ElMessageBox.confirm('确定关闭项目评审结果？')
-        .then(() => {
-          done()
-        })
-        .catch(() => {
-          // catch error
-        })
+      ElMessageBox.confirm('确定关闭评审页面？')
+          .then(() => {
+            done()
+          })
+          .catch(() => {
+            // catch error
+          })
     }
     return {
       Document,
@@ -118,18 +115,19 @@ export default defineComponent({
       RefreshLeft,
       ProjectTableData,
       searchProjectData,
-      drawer,
       direction,
       currentPage1,
       size,
+      drawer,
       disabled,
       background,
       searchProject,
       reset,
-      handlePreview,
       handleSizeChange,
       handleCurrentChange,
-      handleClose
+      handleDashBoardClick,
+      handlePreview,
+      handleClose,
     };
   }
 });
@@ -148,6 +146,7 @@ h1 {
   margin-top: 20px;
   /* 可选：添加顶部间距 */
 }
+
 .operation_shadow {
   position: relative;
   width: 100%;
@@ -160,5 +159,4 @@ h1 {
   display: flex;
   align-items: center;
 }
-
 </style>

@@ -44,6 +44,8 @@
             <el-menu-item-group>
               <el-menu-item index="reportGeneration" @click="openTab('reportGeneration')">报告生成</el-menu-item>
               <el-menu-item index="reportGenerationChild" @click="openTab('projectDashBoardList')">看板列表</el-menu-item>
+              <el-menu-item index="reportReview" @click="openTab('reportReview')">项目审核</el-menu-item>
+              <el-menu-item index="reportReviewEvaluation" @click="openTab('reportReviewEvaluation')">评估项目审核</el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
         </el-menu>
@@ -93,6 +95,10 @@ export default defineComponent({
           return '报告生成';
         case 'projectDashBoardList':
           return '看板列表';
+        case 'reportReview':
+          return '报告审核';
+        case 'reportReviewEvaluation':
+          return '评估报告审核'
         default:
           return tabName;
       }
