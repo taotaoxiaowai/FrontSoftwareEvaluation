@@ -1,21 +1,20 @@
 <template>
   <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
-    <el-col :span="2">
+    <el-col :span="5">
       <el-row>
-        <div>
-          <el-button size="small" type="primary" @click="searchProject()" :icon="Files">批量生成</el-button>
-        </div>
+        <el-text size="small" style="margin-right: 10px;">查询方式</el-text>
+        <el-select-v2
+          v-model="queryType"
+          placeholder="请选择查询方式"
+          :options="options"
+          size="small"
+          :style="{ width: smallScreen ? '120px' : '200px' ,}"
+        />
       </el-row>
     </el-col>
     <el-col :span="5">
-      <el-text size="small">项目编号</el-text>
-      <el-input v-model="searchProjectData.id" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
-                size="small" />
-    </el-col>
-    <el-col :span="5">
-      <el-text size="small">项目名称</el-text>
-      <el-input v-model="searchProjectData.name" style="width: 160px;margin-left: 10px;" placeholder="请输入项目编号"
-                size="small" />
+      <el-text size="small">查询参数</el-text>
+      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="small" />
     </el-col>
     <el-col :span="4">
       <el-row>
@@ -44,9 +43,9 @@
   </el-table>
   <div class="demo-pagination-block">
     <el-pagination v-model:current-page="currentPage1" :page-size="100" :size="size" :disabled="disabled"
-                   :background="background" layout="total, prev, next" :total="1000" @size-change="handleSizeChange"
-                   @current-change="handleCurrentChange" />
-    <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="500">
+                    :background="background" layout="total,pager, prev, next,jumper" :total="totalItems" @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange" />
+    <el-drawer v-model="drawer" title="报告审核结果" :direction="direction" :before-close="handleClose" :size="500">
       <span>Hi, there!</span>
     </el-drawer>
   </div>
@@ -63,12 +62,10 @@ export default defineComponent({
     let ProjectTableData = ref<Project[]>([{
       id: 1,
       name: '1'
-    },
-      {
-        id: 2,
-        name: '1'
-      }])
-
+    },{
+      id: 2,
+      name: '1'
+    }])
     let searchProjectData = ref<Project>({
       id: 0,
       name: ''
@@ -80,6 +77,18 @@ export default defineComponent({
     const drawer = ref(false)
     const router = useRouter();
     const direction = ref<DrawerProps['direction']>('rtl')
+    const queryType=ref()
+    const smallScreen = ref(window.innerWidth < 768)
+    let searchProp = ref()
+    let totalItems=ref(1000)
+    const options=ref([{
+      label:'项目编号',
+      value:'id'
+    },{
+      label:'项目名称',
+      value:'name'
+    }])
+
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
@@ -121,6 +130,11 @@ export default defineComponent({
       drawer,
       disabled,
       background,
+      options,
+      queryType,
+      smallScreen,
+      searchProp,
+      totalItems,
       searchProject,
       reset,
       handleSizeChange,

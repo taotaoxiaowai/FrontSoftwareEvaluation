@@ -39,9 +39,7 @@
             style="margin-right: 10px;" circle />
         </el-tooltip>
         <el-tooltip content="生成并下载报告" effect="light" placement="top">
-          <el-button type="danger" :icon="Document" circle style="margin-right: 10px;" @click="downloadReport(scope.row)" /></el-tooltip>
-
-
+        <el-button type="danger" :icon="Document" circle style="margin-right: 10px;" @click="downloadReport(scope.row)" /></el-tooltip>
       </template>
     </el-table-column>
   </el-table>
@@ -81,7 +79,6 @@ export default defineComponent({
       id: 2,
       name: '1'
     }])
-
     let searchProp = ref()
     const currentPage1 = ref(5)
     const size = ref<ComponentSize>('default')
@@ -100,6 +97,7 @@ export default defineComponent({
       value: 'name'
     }])
     let totalItems=ref(1000)
+
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
