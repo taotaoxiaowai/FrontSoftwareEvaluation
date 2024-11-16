@@ -67,8 +67,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, ref,onMounted } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 interface Tab {
   name: string;
@@ -79,12 +79,19 @@ interface Tab {
 export default defineComponent({
   name: 'App',
   setup() {
+  
     const router = useRouter();
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const userAvatar = require('@/assets/image.png');
     const activeTab = ref();
     const tabs = ref<Tab[]>([]);
     const popoverVisible = ref(false);
+    onMounted(()=>{
+      const localTab=localStorage.getItem('activeTab')
+      if(localTab){
+        openTab(localTab)
+      }
+  } )
     const getTabLabel = (tabName: string) => {
       switch (tabName) {
         case 'course':

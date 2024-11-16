@@ -6,11 +6,17 @@
 
 <script lang="ts">
 import * as echarts from 'echarts';
-import { onMounted } from 'vue';
+import { onMounted,watch } from 'vue';
 
 export default {
     name: 'HistogramChartComponent',
-    setup() {
+    props: {
+    theme: {
+      type: String,
+      required: true
+    }
+  },
+    setup(props:any) {
         let functionPointsChart: echarts.ECharts | null = null;
         onMounted(() => {
             initProgressChart();
@@ -23,7 +29,7 @@ export default {
 
         function initProgressChart() {
             const chartDom = document.getElementById('function-points-chart')!;
-            functionPointsChart = echarts.init(chartDom);
+            functionPointsChart = echarts.init(chartDom,props.theme);
             const option = {
                 title: { text: '项目功能点数' },
                 xAxis: { type: 'category', data: ['阶段1', '阶段2', '阶段3', '阶段4'] },
@@ -32,7 +38,13 @@ export default {
             };
             functionPointsChart.setOption(option);
         }
-
+        watch(
+            () => props.theme,
+            () => {
+                functionPointsChart?.dispose(); // 销毁旧图表实例
+                initProgressChart(); // 使用新主题重新初始化图表
+            }
+        );
         return {
             initProgressChart
 

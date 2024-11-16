@@ -56,7 +56,7 @@
       :background="background" layout="total, prev, next" :total="1000" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" />
     <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="800">
-      <span>Hi, there!</span>
+      
     </el-drawer>
 
 
@@ -115,7 +115,7 @@ export default defineComponent({
       searchProp.value=null;
     }
     function handlePreview(row: any) {
-      console.log('预览')
+      console.log('预览===>',row.id)
     }
     const handleClose = (done: () => void) => {
       ElMessageBox.confirm('确定关闭预览？')
@@ -147,7 +147,6 @@ export default defineComponent({
       handlePreview,
       handleSizeChange,
       handleCurrentChange,
-     
       handleClose
     };
   }
