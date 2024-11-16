@@ -9,20 +9,14 @@
     </el-col>
     <el-col :span="5">
       <el-row>
-      <el-text size="small" style="margin-right: 10px;">查询方式</el-text>
-      <el-select-v2
-        v-model="queryType"
-        placeholder="请选择查询方式"
-        :options="options"
-        size="small"
-        :style="{ width: smallScreen ? '120px' : '200px' ,}"
-      />
-    </el-row>
+        <el-text size="small" style="margin-right: 10px;">查询方式</el-text>
+        <el-select-v2 v-model="queryType" placeholder="请选择查询方式" :options="options" size="small"
+          :style="{ width: smallScreen ? '120px' : '200px', }" />
+      </el-row>
     </el-col>
-      <el-col :span="5">
-        <el-text size="small">查询参数</el-text>
-      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词"
-        size="small" />
+    <el-col :span="5">
+      <el-text size="small">查询参数</el-text>
+      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="small" />
     </el-col>
     <el-col :span="4">
       <el-row>
@@ -41,32 +35,38 @@
     <el-table-column fixed="right" label="操作" min-width="60" align="center">
       <template #default="scope">
         <el-tooltip content="预览报告" effect="light" placement="top">
-          <el-button type="primary" :icon="Search" @click="handlePreview(scope.row); drawer = true"
-          style="margin-right: 10px;" circle/>
+          <el-button type="primary" :icon="View" @click="handlePreview(scope.row); drawer = true"
+            style="margin-right: 10px;" circle />
         </el-tooltip>
         <el-tooltip content="生成并下载报告" effect="light" placement="top">
-           <el-button type="danger" :icon="Document" circle style="margin-right: 10px;"/></el-tooltip>
-          
-        
+          <el-button type="danger" :icon="Document" circle style="margin-right: 10px;" @click="downloadReport(scope.row)" /></el-tooltip>
+
+
       </template>
     </el-table-column>
   </el-table>
   <div class="demo-pagination-block">
     <el-pagination v-model:current-page="currentPage1" :page-size="100" :size="size" :disabled="disabled"
-      :background="background" layout="total, prev, next" :total="1000" @size-change="handleSizeChange"
+      :background="background" layout="total,pager, prev, next,jumper" :total="totalItems" @size-change="handleSizeChange"
       @current-change="handleCurrentChange" />
     <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="800">
-      <span>Hi, there!</span>
+      <el-row>
+        <el-text class="mx-1">报告模板</el-text>
+        <el-radio-group v-model="templateStyle" style="margin-left: 10px;">
+          <el-radio value="one">模板1</el-radio>
+          <el-radio value="two">模板2</el-radio>
+          <el-radio value="three">模板3</el-radio>
+        </el-radio-group>
+      </el-row>
+      <span v-for="(item,index) in 100000" :key="index">测试</span>
     </el-drawer>
-
-
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
-import { Search, RefreshLeft, Document, Files } from '@element-plus/icons-vue'
+import { Search, RefreshLeft, Document, Files,View } from '@element-plus/icons-vue'
 import type { ComponentSize, DrawerProps } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
 export default defineComponent({
@@ -88,16 +88,18 @@ export default defineComponent({
     const background = ref(false)
     const disabled = ref(false)
     const router = useRouter();
+    const templateStyle = ref('one')
     const drawer = ref(false)
     const direction = ref<DrawerProps['direction']>('rtl')
-    const queryType=ref()
-    const options=ref([{
-      label:'项目编号',
-      value:'id'
-    },{
-      label:'项目名称',
-      value:'name'
+    const queryType = ref()
+    const options = ref([{
+      label: '项目编号',
+      value: 'id'
+    }, {
+      label: '项目名称',
+      value: 'name'
     }])
+    let totalItems=ref(1000)
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
@@ -111,14 +113,17 @@ export default defineComponent({
     }
     function reset() {
       console.log("重置")
-      queryType.value=null;
-      searchProp.value=null;
+      queryType.value = null;
+      searchProp.value = null;
     }
     function handlePreview(row: any) {
-      console.log('预览')
+      console.log('预览===>', row.id)
+    }
+    function downloadReport(row:any){
+      console.log('下载报告===>',row.id)
     }
     const handleClose = (done: () => void) => {
-      ElMessageBox.confirm('确定关闭项目评审结果？')
+      ElMessageBox.confirm('确定关闭预览？')
         .then(() => {
           done()
         })
@@ -131,6 +136,7 @@ export default defineComponent({
       Files,
       Search,
       RefreshLeft,
+      View,
       ProjectTableData,
       searchProp,
       drawer,
@@ -142,12 +148,15 @@ export default defineComponent({
       queryType,
       options,
       smallScreen,
+      templateStyle,
+      totalItems,
       searchProject,
       reset,
       handlePreview,
       handleSizeChange,
       handleCurrentChange,
-      handleClose
+      handleClose,
+      downloadReport
     };
   }
 });
@@ -166,6 +175,7 @@ h1 {
   margin-top: 20px;
   /* 可选：添加顶部间距 */
 }
+
 .operation_shadow {
   position: relative;
   width: 100%;
@@ -178,5 +188,4 @@ h1 {
   display: flex;
   align-items: center;
 }
-
 </style>

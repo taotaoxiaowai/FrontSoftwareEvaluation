@@ -6,17 +6,23 @@
 
 <script lang="ts">
 import * as echarts from 'echarts';
-import { onMounted, onBeforeUnmount } from 'vue';
+import { onMounted, watch } from 'vue';
 
 export default {
     name: 'DonutChartComponent',
-    setup() {
+    props: {
+        theme: {
+            type: String,
+            required: true
+        }
+    },
+    setup(props: any) {
 
         let estimateReportChart: echarts.ECharts | null = null;
-
         onMounted(() => {
             initEstimateReportChart()
             window.addEventListener('resize', handleResize)
+            console.log(props.theme)
         })
         const handleResize = () => {
             estimateReportChart?.resize();
@@ -24,7 +30,7 @@ export default {
         };
         function initEstimateReportChart() {
             const chartDom = document.getElementById('estimate-report-chart')!;
-            estimateReportChart = echarts.init(chartDom);
+            estimateReportChart = echarts.init(chartDom, props.theme);
             let option = {
                 title: { text: '项目报告完成情况' },
                 tooltip: {
@@ -69,7 +75,13 @@ export default {
             estimateReportChart.setOption(option);
         }
 
-
+        watch(
+            () => props.theme,
+            () => {
+                estimateReportChart?.dispose(); // 销毁旧图表实例
+                initEstimateReportChart(); // 使用新主题重新初始化图表
+            }
+        );
 
         return {
             initEstimateReportChart,

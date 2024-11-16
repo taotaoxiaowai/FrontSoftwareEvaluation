@@ -3,9 +3,9 @@
     <el-row class="border_shadow">
       <el-col :span="1"><el-button :icon="Close" circle @click="router.back()" /></el-col>
       <el-col :span="18">
-        <donut-chart-component v-if="isDonutChartComponentVisual" />
-        <histogram-chart-component v-if="isHistogramChartComponentVisual" />
-        <pie-chart-component v-if="isPieChartComponentVisual" /></el-col>
+        <donut-chart-component v-if="isDonutChartComponentVisual" :theme="theme" />
+        <histogram-chart-component v-if="isHistogramChartComponentVisual" :theme="theme" />
+        <pie-chart-component v-if="isPieChartComponentVisual" :theme="theme" /></el-col>
       <div class="divider"></div>
       <el-col :span="4">
         <el-row style="align-items:center;margin-left: 10px;">
@@ -15,19 +15,28 @@
           <span style="margin-left: 10px;">看板设置</span>
         </el-row>
         <el-card style="max-width: 500px;margin-top: 30px;align-items:center;margin-left: 10px;">
+          <el-row>
+            <span>主题模式</span>
+            <el-radio-group v-model="theme">
+              <el-radio value="light">浅色</el-radio>
+              <el-radio value="dark">深色</el-radio>
+            </el-radio-group>
+          </el-row>
+          <el-divider />
           <el-row style="margin-top: 10px;align-items:center;">
             <span>环形图</span>
-            <el-switch v-model="isDonutChartComponentVisual"  style="margin-left: 10px;"/>
+            <el-switch v-model="isDonutChartComponentVisual" style="margin-left: 10px;" />
           </el-row>
           <el-row style="margin-top: 10px;align-items:center;">
             <span>饼状图</span>
-            <el-switch v-model="isHistogramChartComponentVisual"  style="margin-left: 10px;"/>
+            <el-switch v-model="isHistogramChartComponentVisual" style="margin-left: 10px;" />
           </el-row>
           <el-row style="margin-top: 10px;align-items:center;">
             <span>柱形图</span>
             <el-switch v-model="isPieChartComponentVisual" style="margin-left: 10px;" />
           </el-row>
           <el-divider />
+
         </el-card>
       </el-col>
     </el-row>
@@ -48,6 +57,7 @@ export default defineComponent({
     PieChartComponent // 在 components 中注册子组件
   },
   setup() {
+    const theme = ref('light')
     const route = useRoute()
     const router = useRouter()
     const { projectId } = route.query
@@ -58,6 +68,7 @@ export default defineComponent({
     return {
       projectId,
       Close,
+      theme,
       isDonutChartComponentVisual,
       isHistogramChartComponentVisual,
       isPieChartComponentVisual,

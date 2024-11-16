@@ -43,8 +43,8 @@
     </el-table>
     <div class="demo-pagination-block">
         <el-pagination v-model:current-page="currentPage1" :page-size="100" :size="size" :disabled="disabled"
-            :background="background" layout="total, prev, next" :total="1000" @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" />
+      :background="background" layout="total,pager, prev, next,jumper" :total="totalItems" @size-change="handleSizeChange"
+      @current-change="handleCurrentChange" />
     
     </div>
 </template>
@@ -78,6 +78,7 @@ export default defineComponent({
       label:'项目名称',
       value:'name'
     }])
+    let totalItems=ref(1000)
    /*  window.addEventListener('resize', () => {
       smallScreen.value = window.innerWidth < 768;
     }); */
@@ -119,6 +120,7 @@ export default defineComponent({
             options,
             searchProp,
             smallScreen,
+            totalItems,
             searchProject,
             reset,
             handleSizeChange,

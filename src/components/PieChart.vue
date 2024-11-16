@@ -6,14 +6,20 @@
 
 <script lang="ts">
 import * as echarts from 'echarts';
-import { onMounted } from 'vue';
+import { onMounted ,watch} from 'vue';
 
 export default {
     name: 'PieChartComponent',
-    setup() {
+    props: {
+    theme: {
+      type: String,
+      required: true
+    }
+  },
+    setup(props:any) {
         let ApprovalChart: echarts.ECharts | null = null;
         onMounted(() => {
-            ApprovalPieChart();
+          InitApprovalPieChart();
             window.addEventListener('resize', handleResize);
         });
 
@@ -21,9 +27,9 @@ export default {
             ApprovalChart?.resize();
         };
 
-        function ApprovalPieChart() {
+        function InitApprovalPieChart() {
        const chartDom = document.getElementById('approval-chart')!;
-       ApprovalChart = echarts.init(chartDom);
+       ApprovalChart = echarts.init(chartDom,props.theme);
     const option = {
      title: { text: '项目审批状态图' },
      series: [
@@ -40,9 +46,14 @@ export default {
    };
    ApprovalChart.setOption(option);
  }
+ watch(
+            () => props.theme,
+            () => {
+              ApprovalChart?.dispose(); // 销毁旧图表实例
+              InitApprovalPieChart(); // 使用新主题重新初始化图表
+            }
+        );
         return {
-            
-
         };
     }
 };
