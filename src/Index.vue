@@ -56,8 +56,7 @@
                 v-for="tab in tabs"
                 :key="tab.name"
                 :label="tab.label"
-                :name="tab.name"
-            >
+                :name="tab.name">
               <router-view :key="tab.name"></router-view>
             </el-tab-pane>
           </el-tabs>
@@ -96,7 +95,6 @@ export default defineComponent({
       { name: 'reportReviewEvaluation', label: '评估报告审核', roles: ['role1'] }
     ]);
     const filteredMenuItems = ref(menuItems.value.filter(item => item.roles.includes('role2' as string)));
-
     onMounted(()=>{
       const localTab=localStorage.getItem('activeTab')
       if(localTab){

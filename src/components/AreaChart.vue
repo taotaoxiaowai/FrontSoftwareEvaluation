@@ -17,7 +17,6 @@ export default {
         }
     },
     setup(props: any) {
-
         let estimateReportChart: echarts.ECharts | null = null;
         onMounted(() => {
             initEstimateReportChart()
@@ -26,8 +25,14 @@ export default {
         })
         const handleResize = () => {
             estimateReportChart?.resize();
-
         };
+        let mark=['EIF', 'ILF', 'EQ', 'EO', 'Line 5']
+        let time=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        let EIFCount=[140, 232, 101, 264, 90, 340, 250]
+        let ILFCount=[120, 282, 111, 234, 220, 340, 310]
+        let EQCount=[320, 132, 201, 334, 190, 130, 220]
+        let EoCount=[220, 402, 231, 134, 190, 230, 120]
+        let fiveCount=[220, 302, 181, 234, 210, 290, 150]
         function initEstimateReportChart() {
             const chartDom = document.getElementById('function-points-area-chart')!;
             estimateReportChart = echarts.init(chartDom, props.theme);
@@ -46,7 +51,7 @@ export default {
                     }
                 },
                 legend: {
-                    data: ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5']
+                    data: mark
                 },
                 toolbox: {
                     feature: {
@@ -63,7 +68,7 @@ export default {
                     {
                         type: 'category',
                         boundaryGap: false,
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        data: time
                     }
                 ],
                 yAxis: [
@@ -73,7 +78,7 @@ export default {
                 ],
                 series: [
                     {
-                        name: 'Line 1',
+                        name: mark[0],
                         type: 'line',
                         stack: 'Total',
                         smooth: true,
@@ -97,10 +102,10 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: [140, 232, 101, 264, 90, 340, 250]
+                        data: EIFCount
                     },
                     {
-                        name: 'Line 2',
+                        name: mark[1],
                         type: 'line',
                         stack: 'Total',
                         smooth: true,
@@ -124,10 +129,10 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: [120, 282, 111, 234, 220, 340, 310]
+                        data: ILFCount
                     },
                     {
-                        name: 'Line 3',
+                        name: mark[2],
                         type: 'line',
                         stack: 'Total',
                         smooth: true,
@@ -151,10 +156,10 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: [320, 132, 201, 334, 190, 130, 220]
+                        data: EQCount
                     },
                     {
-                        name: 'Line 4',
+                        name: mark[3],
                         type: 'line',
                         stack: 'Total',
                         smooth: true,
@@ -178,10 +183,10 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: [220, 402, 231, 134, 190, 230, 120]
+                        data: EoCount
                     },
                     {
-                        name: 'Line 5',
+                        name: mark[4],
                         type: 'line',
                         stack: 'Total',
                         smooth: true,
@@ -209,7 +214,7 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: [220, 302, 181, 234, 210, 290, 150]
+                        data: fiveCount
                     }
                 ]
             };

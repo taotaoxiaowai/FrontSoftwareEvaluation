@@ -28,23 +28,7 @@ export default {
     function InitApprovalPieChart() {
       const chartDom = document.getElementById('approval-chart')!;
       ApprovalChart = echarts.init(chartDom, props.theme);
-      const option = {
-        
-        title: {
-              text: '任务分配图'
-            },
-        series: [
-          {
-           
-            name: 'Nightingale Chart',
-            type: 'pie',
-            radius: [50, 250],
-            center: ['50%', '50%'],
-            roseType: 'area',
-            itemStyle: {
-              borderRadius: 8
-            },
-            data: [
+      let contributionData= [
               { value: 40, name: 'rose 1' },
               { value: 38, name: 'rose 2' },
               { value: 32, name: 'rose 3' },
@@ -54,6 +38,22 @@ export default {
               { value: 22, name: 'rose 7' },
               { value: 18, name: 'rose 8' }
             ]
+      const option = {
+        
+        title: {
+              text: '任务分配图'
+            },
+        series: [
+          {
+            name: 'Nightingale Chart',
+            type: 'pie',
+            radius: [50, 250],
+            center: ['50%', '50%'],
+            roseType: 'area',
+            itemStyle: {
+              borderRadius: 8
+            },
+            data:contributionData
           }
         ]
       };

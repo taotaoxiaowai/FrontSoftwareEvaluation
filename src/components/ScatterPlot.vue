@@ -105,6 +105,7 @@ export default {
                 '#96BFFF'
             ];
             var pieces = [];
+           
             for (var i = 0; i < CLUSTER_COUNT; i++) {
                 pieces.push({
                     value: i,
@@ -112,8 +113,10 @@ export default {
                     color: COLOR_ALL[i]
                 });
             }
-
             const option = {
+                title: {
+              text: '功能点散点图'
+            },
                 dataset: [
                     {
                         source: data
@@ -168,7 +171,6 @@ export default {
             );
             return {
                 initProgressChart
-
             };
         }
     }}

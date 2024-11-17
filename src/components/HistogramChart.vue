@@ -22,19 +22,19 @@ export default {
             initProgressChart();
             window.addEventListener('resize', handleResize);
         });
-
         const handleResize = () => {
             functionPointsChart?.resize();
         };
-
+        let mark=['阶段1', '阶段2', '阶段3', '阶段4']
+        let count=[20, 40, 60, 80]
         function initProgressChart() {
             const chartDom = document.getElementById('function-points-chart')!;
             functionPointsChart = echarts.init(chartDom, props.theme);
             const option = {
                 title: { text: '子系统功能点数' },
-                xAxis: { type: 'category', data: ['阶段1', '阶段2', '阶段3', '阶段4'] },
+                xAxis: { type: 'category', data:mark },
                 yAxis: { type: 'value' },
-                series: [{ data: [20, 40, 60, 80], type: 'bar' }]
+                series: [{ data:count , type: 'bar' }]
             };
             functionPointsChart.setOption(option);
         }
