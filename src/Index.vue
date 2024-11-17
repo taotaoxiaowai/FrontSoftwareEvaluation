@@ -42,10 +42,9 @@
               <span>报告生成子系统</span>
             </template >
             <el-menu-item-group>
-              <el-menu-item index="reportGeneration" @click="openTab('reportGeneration')">报告生成</el-menu-item>
-              <el-menu-item index="projectDashBoardList" @click="openTab('projectDashBoardList')">看板列表</el-menu-item>
-              <el-menu-item index="reportReview" @click="openTab('reportReview')">项目审核</el-menu-item>
-              <el-menu-item index="reportReviewEvaluation" @click="openTab('reportReviewEvaluation')">评估项目审核</el-menu-item>
+              <el-menu-item v-for="item in filteredMenuItems" :key="item.name" :index="item.name" @click="openTab(item.name)">
+                <span>{{ item.label }}</span>
+              </el-menu-item>
             </el-menu-item-group>
           </el-sub-menu>
         </el-menu>
@@ -88,12 +87,23 @@ export default defineComponent({
     const activeTab = ref();
     const tabs = ref<Tab[]>([]);
     const popoverVisible = ref(false);
+    const userRole = ref("role2");
+    // 动态菜单选项
+    const menuItems = ref([
+      { name: 'reportGeneration', label: '报告生成', roles: ['role1'] },
+      { name: 'projectDashBoardList', label: '看板列表', roles: ['role3'] },
+      { name: 'reportReview', label: '报告审核', roles: ['role2'] },
+      { name: 'reportReviewEvaluation', label: '评估报告审核', roles: ['role1'] }
+    ]);
+    const filteredMenuItems = ref(menuItems.value.filter(item => item.roles.includes('role2' as string)));
+
     onMounted(()=>{
       const localTab=localStorage.getItem('activeTab')
       if(localTab){
         openTab(localTab)
       }
   } )
+
     const getTabLabel = (tabName: string) => {
       switch (tabName) {
         case 'course':
@@ -156,10 +166,13 @@ export default defineComponent({
       activeTab,
       tabs,
       popoverVisible,
+      userAvatar,
+      userRole,
+      menuItems,
+      filteredMenuItems,
       handleTabClick,
       removeTab,
       openTab,
-      userAvatar,
     };
   }
 });
