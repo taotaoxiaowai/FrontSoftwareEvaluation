@@ -3,26 +3,31 @@
     <el-col :span="2">
       <el-row>
         <div>
-          <el-button size="small" type="primary" @click="searchProject()" :icon="Files">批量生成</el-button>
+          <el-button size="medium" type="primary" @click="searchProject()" :icon="Files">批量生成</el-button>
         </div>
       </el-row>
     </el-col>
     <el-col :span="5">
       <el-row>
-        <el-text size="small" style="margin-right: 10px;">查询方式</el-text>
-        <el-select-v2 v-model="queryType" placeholder="请选择查询方式" :options="options" size="small"
-          :style="{ width: smallScreen ? '120px' : '200px', }" />
+        <el-text size="medium" style="margin-right: 10px;">查询方式</el-text>
+        <el-select-v2
+            v-model="queryType"
+            placeholder="请选择查询方式"
+            :options="options"
+            size="medium"
+            :style="{ width: smallScreen ? '160px' : '200px' ,}"
+        />
       </el-row>
     </el-col>
     <el-col :span="5">
-      <el-text size="small">查询参数</el-text>
-      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="small" />
+      <el-text size="medium">查询参数</el-text>
+      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="medium" />
     </el-col>
     <el-col :span="4">
       <el-row>
         <div>
-          <el-button size="small" type="primary" @click="searchProject()" :icon="Search">搜索</el-button>
-          <el-button size="small" :icon="RefreshLeft" @click="reset()">重置</el-button>
+          <el-button size="medium" type="primary" @click="searchProject()" :icon="Search">搜索</el-button>
+          <el-button size="medium" :icon="RefreshLeft" @click="reset()">重置</el-button>
         </div>
       </el-row>
     </el-col>
@@ -181,7 +186,7 @@ h1 {
 .operation_shadow {
   position: relative;
   width: 100%;
-  height: 50px;
+  height: 80px;
   padding: 10px;
   background-color: #f0eeee;
   box-shadow: 10px 10px 10px #e1e3e700;
@@ -189,5 +194,6 @@ h1 {
   overflow: hidden;
   display: flex;
   align-items: center;
+  font-size: 16px; /* 增加字体大小 */
 }
 </style>
