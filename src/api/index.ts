@@ -1,5 +1,6 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import { ElNotification } from 'element-plus';
+import { da } from 'element-plus/es/locale';
 // 定义响应数据的接口
 axios.defaults.withCredentials = true;
 interface ResponseData {

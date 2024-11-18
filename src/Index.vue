@@ -69,7 +69,7 @@
 <script lang="ts">
 import { defineComponent, ref,onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-
+import service from './api';
 interface Tab {
   name: string;
   label: string;
@@ -100,6 +100,8 @@ export default defineComponent({
       if(localTab){
         openTab(localTab)
       }
+      const data= service.get('/project/findAll');
+      console.log(data);
   } )
 
     const getTabLabel = (tabName: string) => {
