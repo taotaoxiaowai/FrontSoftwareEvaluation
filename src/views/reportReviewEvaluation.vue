@@ -2,7 +2,7 @@
   <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
     <el-col :span="2">
     </el-col>
-    <el-col :span="5">
+    <el-col :span="6">
       <el-row>
         <el-text size="medium" style="margin-right: 10px;">查询方式</el-text>
         <el-select-v2
@@ -14,7 +14,7 @@
         />
       </el-row>
     </el-col>
-    <el-col :span="5">
+    <el-col :span="6">
       <el-text size="medium">查询参数</el-text>
       <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="medium" />
     </el-col>

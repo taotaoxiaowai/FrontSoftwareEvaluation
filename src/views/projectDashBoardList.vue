@@ -1,32 +1,33 @@
 <template>
-  <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
-    <el-col :span="2">
-    </el-col>
-    <el-col :span="5">
-      <el-row>
-        <el-text size="medium" style="margin-right: 10px;">查询方式</el-text>
-        <el-select-v2
-            v-model="queryType"
-            placeholder="请选择查询方式"
-            :options="options"
-            size="medium"
-            :style="{ width: smallScreen ? '160px' : '200px' ,}"
-        />
-      </el-row>
-    </el-col>
-    <el-col :span="5">
-      <el-text size="medium">查询参数</el-text>
-      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="medium" />
-    </el-col>
-    <el-col :span="4">
-      <el-row>
-        <div>
-          <el-button size="medium" type="primary" @click="searchProject()" :icon="Search">搜索</el-button>
-          <el-button size="medium" :icon="RefreshLeft" @click="reset()">重置</el-button>
-        </div>
-      </el-row>
-    </el-col>
-  </el-row>
+ <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
+  <el-col :span="4">
+    
+  </el-col>
+  <el-col :span="6">
+    <el-row>
+      <el-text size="medium" style="margin-right: 10px;">查询方式</el-text>
+      <el-select-v2
+          v-model="queryType"
+          placeholder="请选择查询方式"
+          :options="options"
+          size="medium"
+          :style="{ width: smallScreen ? '160px' : '200px' ,}"
+      />
+    </el-row>
+  </el-col>
+  <el-col :span="6">
+    <el-text size="medium">查询参数</el-text>
+    <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="medium" />
+  </el-col>
+  <el-col :span="8">
+    <el-row>
+      <div>
+        <el-button size="medium" type="primary" @click="searchProject()" :icon="Search">搜索</el-button>
+        <el-button size="medium" :icon="RefreshLeft" @click="reset()">重置</el-button>
+      </div>
+    </el-row>
+  </el-col>
+</el-row>
 
     <el-table :data="ProjectTableData" style="width: 100%">
       <el-table-column prop="id" label="项目编号" align="center" />
