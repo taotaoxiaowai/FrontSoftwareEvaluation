@@ -30,8 +30,8 @@
   <el-table :data="ProjectTableData" style="width: 100%">
     <el-table-column type="selection" label="选择" align="center" />
     <el-table-column prop="id" label="项目编号" align="center" />
-    <el-table-column prop="name" label="项目名称" align="center">
-    </el-table-column>
+    <el-table-column prop="project_name" label="项目名称" align="center" />
+    <el-table-column prop="state" label="项目状态" align="center" />
     <el-table-column fixed="right" label="操作" min-width="60" align="center">
       <template #default="scope">
         <el-tooltip content="预览报告" effect="light" placement="top">
@@ -39,14 +39,15 @@
             style="margin-right: 10px;" circle />
         </el-tooltip>
         <el-tooltip content="生成并下载报告" effect="light" placement="top">
-        <el-button type="danger" :icon="Document" circle style="margin-right: 10px;" @click="downloadReport(scope.row)" /></el-tooltip>
+          <el-button type="danger" :icon="Document" circle style="margin-right: 10px;"
+            @click="downloadReport(scope.row)" /></el-tooltip>
       </template>
     </el-table-column>
   </el-table>
   <div class="demo-pagination-block">
     <el-pagination v-model:current-page="currentPage1" :page-size="100" :size="size" :disabled="disabled"
-      :background="background" layout="total,pager, prev, next,jumper" :total="totalItems" @size-change="handleSizeChange"
-      @current-change="handleCurrentChange" />
+      :background="background" layout="total,pager, prev, next,jumper" :total="totalItems"
+      @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="800">
       <el-row>
         <el-text class="mx-1">报告模板</el-text>
@@ -56,7 +57,7 @@
           <el-radio value="three">模板3</el-radio>
         </el-radio-group>
       </el-row>
-      <span v-for="(item,index) in 100000" :key="index">测试</span>
+      <span v-for="(item, index) in 100000" :key="index">测试</span>
     </el-drawer>
   </div>
 </template>
@@ -64,21 +65,16 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
-import { Search, RefreshLeft, Document, Files,View } from '@element-plus/icons-vue'
+import { Search, RefreshLeft, Document, Files, View } from '@element-plus/icons-vue'
 import type { ComponentSize, DrawerProps } from 'element-plus'
 import { ElMessageBox } from 'element-plus'
+import service from '@/api';
+import { da, fi } from 'element-plus/es/locale';
 export default defineComponent({
   name: 'ProjectGenerationComponent',
   setup() {
     const smallScreen = ref(window.innerWidth < 768);
-    let ProjectTableData = ref<Project[]>([{
-      id: 1,
-      name: '1'
-    },
-    {
-      id: 2,
-      name: '1'
-    }])
+    let ProjectTableData = ref<Project[]>([])
     let searchProp = ref()
     const currentPage1 = ref(5)
     const size = ref<ComponentSize>('default')
@@ -96,8 +92,15 @@ export default defineComponent({
       label: '项目名称',
       value: 'name'
     }])
-    let totalItems=ref(1000)
-
+    let totalItems = ref(1000)
+    onMounted(() => {
+      getProjects()
+    })
+    async function getProjects() {
+      const data = await service.get('/project/findAll');
+      const projects = (data as unknown as { projects: Project[] }).projects;  
+      ProjectTableData.value=projects
+    }
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
@@ -117,8 +120,8 @@ export default defineComponent({
     function handlePreview(row: any) {
       console.log('预览===>', row.id)
     }
-    function downloadReport(row:any){
-      console.log('下载报告===>',row.id)
+    function downloadReport(row: any) {
+      console.log('下载报告===>', row.id)
     }
     const handleClose = (done: () => void) => {
       ElMessageBox.confirm('确定关闭预览？')
@@ -129,6 +132,7 @@ export default defineComponent({
           // catch error
         })
     }
+
     return {
       Document,
       Files,

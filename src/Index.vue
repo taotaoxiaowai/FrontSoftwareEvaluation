@@ -42,7 +42,7 @@
               <span>报告生成子系统</span>
             </template >
             <el-menu-item-group>
-              <el-menu-item v-for="item in filteredMenuItems" :key="item.name" :index="item.name" @click="openTab(item.name)">
+              <el-menu-item v-for="item in menuItems" :key="item.name" :index="item.name" @click="openTab(item.name)">
                 <span>{{ item.label }}</span>
               </el-menu-item>
             </el-menu-item-group>
@@ -100,10 +100,6 @@ export default defineComponent({
       if(localTab){
         openTab(localTab)
       }
-      const data= service.get('/project/findAll');
-      console.log(data);
-      const data2=service.post('/project/findById',{id:1});
-      console.log("根据id查找项目==》",data2);
       
   } )
 

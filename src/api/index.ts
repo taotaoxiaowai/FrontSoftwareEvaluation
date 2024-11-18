@@ -26,14 +26,14 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
     (response: any) => {
-        const data = response.data;
-       /*  if (Object.prototype.hasOwnProperty.call(data, 'code')) {
-            if (data.code === 1000) {
+      const data = response.data;
+        if (Object.prototype.hasOwnProperty.call(data, 'isOk')) {
+            if (data.isOk === true) {
                 return data;
-            } else if (data.code === 2000) {
+            } else if (data.code === false) {
                 ElNotification.warning({
                     title: '提示',
-                    message: data.message
+                    message: data.msg
                 });
                 return false;
             }
@@ -43,8 +43,8 @@ service.interceptors.response.use(
                 message: '出现错误，请联系管理员'
             });
             return false;
-        }
-    }, */
+        } 
+    },
     
     (error: AxiosError) => {
         if (error.response) {
@@ -55,7 +55,6 @@ service.interceptors.response.use(
         }
         return false;
     }
-    return data;}
 );
 
 export default service;

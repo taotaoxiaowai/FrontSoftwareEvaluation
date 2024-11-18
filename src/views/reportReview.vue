@@ -62,17 +62,8 @@ import {ComponentSize, DrawerProps, ElMessageBox} from 'element-plus'
 export default defineComponent({
   name: 'ProjectDashBoardListComponent',
   setup() {
-    let ProjectTableData = ref<Project[]>([{
-      id: 1,
-      name: '1'
-    },{
-      id: 2,
-      name: '1'
-    }])
-    let searchProjectData = ref<Project>({
-      id: 0,
-      name: ''
-    })
+    let ProjectTableData = ref<Project[]>([])
+    let searchProjectData = ref<Project>()
     const currentPage1 = ref(5)
     const size = ref<ComponentSize>('default')
     const background = ref(false)
