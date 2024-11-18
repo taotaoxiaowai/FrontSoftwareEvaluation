@@ -86,7 +86,7 @@ export default defineComponent({
     const activeTab = ref();
     const tabs = ref<Tab[]>([]);
     const popoverVisible = ref(false);
-    const userRole = ref("role2");
+    const userRole = ref("role1");
     // 动态菜单选项
     const menuItems = ref([
       { name: 'reportGeneration', label: '报告生成', roles: ['role1'] },
@@ -94,7 +94,7 @@ export default defineComponent({
       { name: 'reportReview', label: '报告审核', roles: ['role2'] },
       { name: 'reportReviewEvaluation', label: '评估报告审核', roles: ['role1'] }
     ]);
-    const filteredMenuItems = ref(menuItems.value.filter(item => item.roles.includes('role2' as string)));
+    const filteredMenuItems = ref(menuItems.value.filter(item => item.roles.includes('role1' as string)));
     onMounted(()=>{
       const localTab=localStorage.getItem('activeTab')
       if(localTab){

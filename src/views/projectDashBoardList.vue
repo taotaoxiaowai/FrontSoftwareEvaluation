@@ -1,30 +1,32 @@
 <template>
-    <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
-      <el-col :span="5">
-        <el-row>
-          <el-text size="small" style="margin-right: 10px;">查询方式</el-text>
-          <el-select-v2
+  <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
+    <el-col :span="2">
+    </el-col>
+    <el-col :span="5">
+      <el-row>
+        <el-text size="medium" style="margin-right: 10px;">查询方式</el-text>
+        <el-select-v2
             v-model="queryType"
             placeholder="请选择查询方式"
             :options="options"
-            size="small"
-            :style="{ width: smallScreen ? '120px' : '200px' ,}"
-          />
-        </el-row>
-      </el-col>
-      <el-col :span="5">
-        <el-text size="small">查询参数</el-text>
-        <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="small" />
-      </el-col>
-        <el-col :span="4">
-          <el-row>
-              <div>
-                <el-button size="small" type="primary" @click="searchProject()" :icon="Search">搜索</el-button>
-                <el-button size="small" :icon="RefreshLeft" @click="reset()">重置</el-button>
-              </div>
-          </el-row>
-        </el-col>
-    </el-row>
+            size="medium"
+            :style="{ width: smallScreen ? '160px' : '200px' ,}"
+        />
+      </el-row>
+    </el-col>
+    <el-col :span="5">
+      <el-text size="medium">查询参数</el-text>
+      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="medium" />
+    </el-col>
+    <el-col :span="4">
+      <el-row>
+        <div>
+          <el-button size="medium" type="primary" @click="searchProject()" :icon="Search">搜索</el-button>
+          <el-button size="medium" :icon="RefreshLeft" @click="reset()">重置</el-button>
+        </div>
+      </el-row>
+    </el-col>
+  </el-row>
 
     <el-table :data="ProjectTableData" style="width: 100%">
       <el-table-column prop="id" label="项目编号" align="center" />
@@ -142,15 +144,16 @@ h1 {
 }
 
 .operation_shadow {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    padding: 10px;
-    background-color: #f0eeee;
-    box-shadow: 10px 10px 10px #e1e3e700;
-    border-radius: 5px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
+  position: relative;
+  width: 100%;
+  height: 80px;
+  padding: 10px;
+  background-color: #f0eeee;
+  box-shadow: 10px 10px 10px #e1e3e700;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  font-size: 16px; /* 增加字体大小 */
 }
 </style>
