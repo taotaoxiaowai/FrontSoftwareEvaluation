@@ -102,6 +102,9 @@ export default defineComponent({
       }
       const data= service.get('/project/findAll');
       console.log(data);
+      const data2=service.post('/project/findById',{id:1});
+      console.log("根据id查找项目==》",data2);
+      
   } )
 
     const getTabLabel = (tabName: string) => {
