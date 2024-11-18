@@ -27,7 +27,7 @@
       </el-row>
     </el-col>
   </el-row>
-  <el-table :data="ProjectTableData" style="width: 100%">
+  <el-table :data="pagedProjects" style="width: 100%">
     <el-table-column type="selection" label="选择" align="center" />
     <el-table-column prop="id" label="项目编号" align="center" />
     <el-table-column prop="projectName" label="项目名称" align="center" />
@@ -45,7 +45,13 @@
       </template>
     </el-table-column>
   </el-table>
- 
+  <el-row type="flex" justify="center" align="middle">
+    <el-col :span="18">
+      <el-pagination @current-change="handleCurrentChange" :current-page="currentPage1" :page-size="pageSize"
+                     layout="total, prev, pager, next" :total="totalItems">
+      </el-pagination>
+    </el-col>
+  </el-row>
   <div class="demo-pagination-block">
     <el-pagination v-model:current-page="currentPage1" :page-size="100" :size="size" :disabled="disabled"
       :background="background" layout="total,pager, prev, next,jumper" :total="totalItems"
@@ -64,7 +70,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import {defineComponent, ref, onMounted, computed} from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files, View } from '@element-plus/icons-vue'
@@ -86,14 +92,20 @@ export default defineComponent({
     const drawer = ref(false)
     const direction = ref<DrawerProps['direction']>('rtl')
     const queryType = ref()
-    const options = ref([{
-      label: '项目编号',
-      value: 'id'
-    }, {
-      label: '项目名称',
-      value: 'name'
+    const totalItems=ref(0)
+    const pageSize = ref(5);
+    const currentPage = ref(1);
+    const options=ref([{
+      label:'项目编号',
+      value:'id'
+    },{
+      label:'项目名称',
+      value:'name'
     }])
-    let totalItems = ref(1000)
+    const pagedProjects = computed(() => {
+      return ProjectTableData.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize
+          .value);
+    });
     onMounted(() => {
       getProjects()
     })
@@ -101,12 +113,14 @@ export default defineComponent({
       const data = await service.get('/project/findAll');
       const projects = (data as unknown as { projects: Project[] }).projects;
       ProjectTableData.value = projects
+      totalItems.value=projects.length
+      console.log(totalItems)
     }
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
     const handleCurrentChange = (val: number) => {
-      console.log(`current page: ${val}`)
+      currentPage.value = val;
     }
     async function searchProject() {
       console.log("搜索===》")
@@ -173,6 +187,9 @@ export default defineComponent({
       smallScreen,
       templateStyle,
       totalItems,
+      pageSize,
+      currentPage,
+      pagedProjects,
       searchProject,
       reset,
       handlePreview,
