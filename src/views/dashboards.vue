@@ -3,15 +3,15 @@
     <el-row class="border_shadow" :style="{ backgroundColor: bgColor }">
       <el-col :span="1"><el-button :icon="Close" circle @click="router.back()" /></el-col>
       <el-col :span="6">
-          <area-chart-component v-if="isAreaChartComponentVisual" :theme="theme" />
-          <histogram-chart-component v-if="isHistogramChartComponentVisual" :theme="theme" />
+          <area-chart-component v-if="isAreaChartComponentVisual"  :theme="theme"/>
+          <histogram-chart-component v-if="isHistogramChartComponentVisual"  :theme="theme"/>
           </el-col>
         <el-col :span="12">
           <el-row>
             <el-col><pie-chart-component v-if="isPieChartComponentVisual" :theme="theme"/></el-col>
             <el-col> <scatter-plot-component v-if="isScatterPlotComponentVisual" :theme="theme" /></el-col>
           </el-row>
-          <el-row></el-row>
+          <el-row><ProjectTimeline  v-if="isProjectTimelineVisual" :theme="theme"/></el-row>
         </el-col>
 
       <div class="divider"></div>
@@ -48,6 +48,10 @@
             <el-col :span="14" style="font-size: small;"> <span>功能点散点图</span></el-col>
             <el-col :span="10"><el-switch v-model="isScatterPlotComponentVisual" style="margin-left: 10px;" /></el-col>
           </el-row>
+          <el-row style="align-items:center;">
+            <el-col :span="14" style="font-size: small;"> <span>项目进度时间轴</span></el-col>
+            <el-col :span="10"><el-switch v-model="isProjectTimelineVisual" style="margin-left: 10px;" /></el-col>
+          </el-row>
           <el-divider />
         </el-card>
       </el-col>
@@ -55,12 +59,13 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted ,watch} from 'vue';
 import { Close } from '@element-plus/icons-vue'
 import AreaChartComponent from '@/components/AreaChart.vue';
 import HistogramChartComponent from '@/components/HistogramChart.vue'
 import PieChartComponent from '@/components/PieChart.vue'
 import ScatterPlotComponent from '@/components/ScatterPlot.vue'
+import ProjectTimeline from '@/components/TimeLine.vue'
 import { useRoute, useRouter } from 'vue-router';
 export default defineComponent({
   name: 'ProjectGenerationComponent',
@@ -68,7 +73,8 @@ export default defineComponent({
     AreaChartComponent,
     HistogramChartComponent,
     PieChartComponent,
-    ScatterPlotComponent
+    ScatterPlotComponent,
+    ProjectTimeline
   },
   setup() {
     const theme = ref('light')
@@ -79,11 +85,13 @@ export default defineComponent({
     let isHistogramChartComponentVisual = ref(false);
     let isPieChartComponentVisual = ref(false);
     let isScatterPlotComponentVisual = ref(false);
-    let bgColor=ref(#efe8e8ca)
+    let isProjectTimelineVisual=ref(false)
+    let bgColor=ref('#efe8e8')
     watch(
-      () => theme,
+      () => theme.value,
       () => {
-        if(theme.value=='light')bgColor.value=#efe8e8ca
+        if(theme.value=='light')bgColor.value='#efe8e8'
+        else bgColor.value='#000022'
       }
     );
     console.log('项目id', projectId)
@@ -91,10 +99,12 @@ export default defineComponent({
       projectId,
       Close,
       theme,
+      bgColor,
       isAreaChartComponentVisual,
       isHistogramChartComponentVisual,
       isPieChartComponentVisual,
       isScatterPlotComponentVisual,
+      isProjectTimelineVisual,
       router
     };
   }
@@ -118,7 +128,7 @@ h1 {
 
 .border_shadow {
   width: 100%;
-  background-color: #efe8e8ca;
+
   box-shadow: 10px 10px 10px #e1e3e700;
   border-radius: 5px;
   overflow: hidden;

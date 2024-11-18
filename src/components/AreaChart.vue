@@ -26,7 +26,7 @@ export default {
         const handleResize = () => {
             estimateReportChart?.resize();
         };
-        let mark=['EIF', 'ILF', 'EQ', 'EO', 'Line 5']
+        let mark=['EIF', 'ILF', 'EQ', 'EO', 'EI']
         let time=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         let EIFCount=[140, 232, 101, 264, 90, 340, 250]
         let ILFCount=[120, 282, 111, 234, 220, 340, 310]
@@ -50,9 +50,7 @@ export default {
                         }
                     }
                 },
-                legend: {
-                    data: mark
-                },
+               
                 toolbox: {
                     feature: {
                         saveAsImage: {}

@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, defineProps} from 'vue';
 
 // 定义项目阶段的数据类型
 interface Stage {
@@ -51,10 +51,9 @@ async function fetchProjectStages() {
 }
 
 // 计算属性，根据 `theme` 返回对应的样式类
-const themeClass = computed(() => {
+ const themeClass = computed(() => {
   return props.theme === 'dark' ? 'dark-mode' : 'light-mode';
-});
-
+}); 
 // 在组件挂载时获取数据
 onMounted(fetchProjectStages);
 </script>
