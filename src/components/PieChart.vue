@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard">
-    <div id="approval-chart" style="width: 800px; height: 600px;"></div>
+    <div id="approval-chart" style="width: 400px; height: 300px;"></div>
   </div>
 </template>
 
@@ -47,11 +47,11 @@ export default {
           {
             name: 'Nightingale Chart',
             type: 'pie',
-            radius: [50, 250],
+            radius: [20, 100],
             center: ['50%', '50%'],
             roseType: 'area',
             itemStyle: {
-              borderRadius: 8
+              borderRadius: 4
             },
             data:contributionData
           }

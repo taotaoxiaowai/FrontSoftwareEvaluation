@@ -1,23 +1,30 @@
 <template>
   <div>
-    <el-row class="border_shadow">
+    <el-row class="border_shadow" :style="{ backgroundColor: bgColor }">
       <el-col :span="1"><el-button :icon="Close" circle @click="router.back()" /></el-col>
-      <el-col :span="16">
-        <area-chart-component v-if="isAreaChartComponentVisual" :theme="theme" />
-        <histogram-chart-component v-if="isHistogramChartComponentVisual" :theme="theme" />
-        <pie-chart-component v-if="isPieChartComponentVisual" :theme="theme" />
-        <scatter-plot-component v-if="isScatterPlotComponentVisual" :theme="theme" /></el-col>
-      <div class="divider"></div>
       <el-col :span="6">
+          <area-chart-component v-if="isAreaChartComponentVisual" :theme="theme" />
+          <histogram-chart-component v-if="isHistogramChartComponentVisual" :theme="theme" />
+          </el-col>
+        <el-col :span="12">
+          <el-row>
+            <el-col><pie-chart-component v-if="isPieChartComponentVisual" :theme="theme"/></el-col>
+            <el-col> <scatter-plot-component v-if="isScatterPlotComponentVisual" :theme="theme" /></el-col>
+          </el-row>
+          <el-row></el-row>
+        </el-col>
+
+      <div class="divider"></div>
+      <el-col :span="4">
         <el-row style="align-items:center;">
           <el-icon>
             <Tools />
           </el-icon>
-          <span style="margin-left: 10px;">看板设置</span>
+          <span style="margin-left: 10px;font-size: small;">看板设置</span>
         </el-row>
         <el-card style="max-width: 500px;margin-top: 30px;align-items:center;margin-left: 10px;">
           <el-row style="align-items:center;">
-            <span style="margin-right: 10px;">主题模式</span>
+            <span style="margin-right: 10px;font-size: small;">主题模式</span>
             <el-radio-group v-model="theme">
               <el-radio value="light">浅色</el-radio>
               <el-radio value="dark">深色</el-radio>
@@ -25,23 +32,23 @@
           </el-row>
           <el-divider />
           <el-row style="align-items:center;">
-            <el-col :span="14"><span>子系统功能点分布图</span></el-col>
+            <el-col :span="14"><span style="font-size: small;">子系统功能点分布图</span></el-col>
             <el-col :span="10"><el-switch v-model="isAreaChartComponentVisual" style="margin-left: 10px;" /></el-col>
           </el-row>
           <el-row style="align-items:center;">
-            <el-col :span="14"><span>调整后功能点图</span></el-col>
-            <el-col :span="10"> <el-switch v-model="isHistogramChartComponentVisual" style="margin-left: 10px;" /></el-col>
+            <el-col :span="14" style="font-size: small;"><span>调整后功能点图</span></el-col>
+            <el-col :span="10"> <el-switch v-model="isHistogramChartComponentVisual"
+                style="margin-left: 10px;" /></el-col>
           </el-row>
           <el-row style="align-items:center;">
-            <el-col :span="14"> <span>任务分配图</span></el-col>
-            <el-col :span="10"><el-switch v-model="isPieChartComponentVisual" style="margin-left: 10px;" /></el-col>    
+            <el-col :span="14" style="font-size: small;"> <span>任务分配图</span></el-col>
+            <el-col :span="10"><el-switch v-model="isPieChartComponentVisual" style="margin-left: 10px;" /></el-col>
           </el-row>
           <el-row style="align-items:center;">
-            <el-col :span="14"> <span>功能点散点图</span></el-col>
-            <el-col :span="10"><el-switch v-model="isScatterPlotComponentVisual" style="margin-left: 10px;" /></el-col>    
+            <el-col :span="14" style="font-size: small;"> <span>功能点散点图</span></el-col>
+            <el-col :span="10"><el-switch v-model="isScatterPlotComponentVisual" style="margin-left: 10px;" /></el-col>
           </el-row>
           <el-divider />
-
         </el-card>
       </el-col>
     </el-row>
@@ -72,6 +79,13 @@ export default defineComponent({
     let isHistogramChartComponentVisual = ref(false);
     let isPieChartComponentVisual = ref(false);
     let isScatterPlotComponentVisual = ref(false);
+    let bgColor=ref(#efe8e8ca)
+    watch(
+      () => theme,
+      () => {
+        if(theme.value=='light')bgColor.value=#efe8e8ca
+      }
+    );
     console.log('项目id', projectId)
     return {
       projectId,

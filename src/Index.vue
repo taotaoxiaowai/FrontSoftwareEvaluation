@@ -69,7 +69,7 @@
 <script lang="ts">
 import { defineComponent, ref,onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import service from './api';
+
 interface Tab {
   name: string;
   label: string;

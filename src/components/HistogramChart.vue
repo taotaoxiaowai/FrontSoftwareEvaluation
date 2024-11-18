@@ -1,6 +1,6 @@
 <template>
     <div class="dashboard">
-        <div id="function-points-chart" style="width: 800px; height: 400px;"></div>
+        <div id="function-points-chart" style="width: 400px; height: 300px;"></div>
     </div>
 </template>
 

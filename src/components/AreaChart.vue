@@ -1,6 +1,6 @@
 <template>
     <div class="dashboard">
-        <div id="function-points-area-chart" style="width: 800px; height: 600px;"></div>
+        <div id="function-points-area-chart" style="width: 400px; height: 300px;"></div>
     </div>
 </template>
 
@@ -39,7 +39,7 @@ export default {
             let option = {
                 color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
                 title: {
-                    text: '子系统功能点分布图'
+                    text: '子系统功能点分布图',
                 },
                 tooltip: {
                     trigger: 'axis',

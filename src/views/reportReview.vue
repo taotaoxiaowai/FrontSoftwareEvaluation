@@ -1,6 +1,6 @@
 <template>
   <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
-    <el-col :span="2">
+    <el-col :span="4">
   </el-col>
   <el-col :span="6">
     <el-row>
@@ -30,10 +30,9 @@
 
   <el-table :data="ProjectTableData" style="width: 100%">
     <el-table-column prop="id" label="项目编号" align="center" />
-    <el-table-column prop="name" label="项目名称" align="center">
-    </el-table-column>
-    <el-table-column prop="name" label="项目状态" align="center">
-    </el-table-column>
+    <el-table-column prop="projectName" label="项目名称" align="center" />
+    <el-table-column prop="state" label="项目状态" align="center" />
+    <el-table-column prop="description" label="项目描述" align="center" />
     <el-table-column fixed="right" label="操作" min-width="60" align="center">
       <template #default="scope">
         <el-tooltip content="查看报告" effect="light" placement="top">
@@ -60,7 +59,9 @@ import { defineComponent, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files } from '@element-plus/icons-vue'
-import {ComponentSize, DrawerProps, ElMessageBox} from 'element-plus'
+import {ComponentSize, DrawerProps, ElMessage,ElMessageBox} from 'element-plus'
+import service from '@/api';
+
 export default defineComponent({
   name: 'ProjectDashBoardListComponent',
   setup() {
@@ -84,19 +85,47 @@ export default defineComponent({
       label:'项目名称',
       value:'name'
     }])
-
+    
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
     const handleCurrentChange = (val: number) => {
       console.log(`current page: ${val}`)
     }
-    function searchProject() {
+    async function searchProject() {
       console.log("搜索===》")
+      console.log(queryType.value)
+      console.log(searchProp.value)
+      if (queryType.value != null) {
+        if(searchProp.value!=null){
+          if (queryType.value == 'id') {
+          const data = await service.post('/project/findById', { id: searchProp.value });
+          const projects = [(data as unknown as { project: Project }).project];
+          ProjectTableData.value = projects
+        }else if(queryType.value=='name'){
+          const data = await service.post('/project/findByName',{projectName:searchProp.value});
+          const projects = (data as unknown as { projects: Project[] }).projects;
+          ProjectTableData.value = projects
+        }
+        }else{
+          ElMessage.warning('请输入查询关键词')
+        }
+        
+      } else {
+        ElMessage.warning('请选择查询方式')
+      }
 
     }
-    function reset() {
+    async function reset() {
       console.log("重置")
+      queryType.value = null;
+      searchProp.value = null;
+      getProjects();
+    }
+    async function getProjects() {
+      const data = await service.get('/project/findAll');
+      const projects = (data as unknown as { projects: Project[] }).projects;
+      ProjectTableData.value = projects
     }
     function handleDashBoardClick(row: any) {
       router.push({ name: 'dashboards', query: { projectId: row.id } });

@@ -1,42 +1,38 @@
 <template>
- <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
-  <el-col :span="4">
-    <el-row>
-      <div>
-        <el-button size="medium" type="primary" @click="searchProject()" :icon="Files">批量生成</el-button>
-      </div>
-    </el-row>
-  </el-col>
-  <el-col :span="6">
-    <el-row>
-      <el-text size="medium" style="margin-right: 10px;">查询方式</el-text>
-      <el-select-v2
-          v-model="queryType"
-          placeholder="请选择查询方式"
-          :options="options"
-          size="medium"
-          :style="{ width: smallScreen ? '160px' : '200px' ,}"
-      />
-    </el-row>
-  </el-col>
-  <el-col :span="6">
-    <el-text size="medium">查询参数</el-text>
-    <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="medium" />
-  </el-col>
-  <el-col :span="8">
-    <el-row>
-      <div>
-        <el-button size="medium" type="primary" @click="searchProject()" :icon="Search">搜索</el-button>
-        <el-button size="medium" :icon="RefreshLeft" @click="reset()">重置</el-button>
-      </div>
-    </el-row>
-  </el-col>
-</el-row>
+  <el-row style="margin-top: 10px;margin-bottom: 10px;" class="operation_shadow">
+    <el-col :span="4">
+      <el-row>
+        <div>
+          <el-button size="medium" type="primary" @click="searchProject()" :icon="Files">批量生成</el-button>
+        </div>
+      </el-row>
+    </el-col>
+    <el-col :span="6">
+      <el-row>
+        <el-text size="medium" style="margin-right: 10px;">查询方式</el-text>
+        <el-select-v2 v-model="queryType" placeholder="请选择查询方式" :options="options" size="medium"
+          :style="{ width: smallScreen ? '160px' : '200px', }" />
+      </el-row>
+    </el-col>
+    <el-col :span="6">
+      <el-text size="medium">查询参数</el-text>
+      <el-input v-model="searchProp" style="width: 160px;margin-left: 10px;" placeholder="请输入搜索关键词" size="medium" />
+    </el-col>
+    <el-col :span="8">
+      <el-row>
+        <div>
+          <el-button size="medium" type="primary" @click="searchProject()" :icon="Search">搜索</el-button>
+          <el-button size="medium" :icon="RefreshLeft" @click="reset()">重置</el-button>
+        </div>
+      </el-row>
+    </el-col>
+  </el-row>
   <el-table :data="ProjectTableData" style="width: 100%">
     <el-table-column type="selection" label="选择" align="center" />
     <el-table-column prop="id" label="项目编号" align="center" />
-    <el-table-column prop="project_name" label="项目名称" align="center" />
+    <el-table-column prop="projectName" label="项目名称" align="center" />
     <el-table-column prop="state" label="项目状态" align="center" />
+    <el-table-column prop="description" label="项目描述" align="center" />
     <el-table-column fixed="right" label="操作" min-width="60" align="center">
       <template #default="scope">
         <el-tooltip content="预览报告" effect="light" placement="top">
@@ -49,6 +45,7 @@
       </template>
     </el-table-column>
   </el-table>
+ 
   <div class="demo-pagination-block">
     <el-pagination v-model:current-page="currentPage1" :page-size="100" :size="size" :disabled="disabled"
       :background="background" layout="total,pager, prev, next,jumper" :total="totalItems"
@@ -72,9 +69,8 @@ import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files, View } from '@element-plus/icons-vue'
 import type { ComponentSize, DrawerProps } from 'element-plus'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import service from '@/api';
-import { da, fi } from 'element-plus/es/locale';
 export default defineComponent({
   name: 'ProjectGenerationComponent',
   setup() {
@@ -103,8 +99,8 @@ export default defineComponent({
     })
     async function getProjects() {
       const data = await service.get('/project/findAll');
-      const projects = (data as unknown as { projects: Project[] }).projects;  
-      ProjectTableData.value=projects
+      const projects = (data as unknown as { projects: Project[] }).projects;
+      ProjectTableData.value = projects
     }
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
@@ -112,15 +108,35 @@ export default defineComponent({
     const handleCurrentChange = (val: number) => {
       console.log(`current page: ${val}`)
     }
-    function searchProject() {
+    async function searchProject() {
       console.log("搜索===》")
       console.log(queryType.value)
       console.log(searchProp.value)
+      if (queryType.value != null) {
+        if(searchProp.value!=null){
+          if (queryType.value == 'id') {
+          const data = await service.post('/project/findById', { id: searchProp.value });
+          const projects = [(data as unknown as { project: Project }).project];
+          ProjectTableData.value = projects
+        }else if(queryType.value=='name'){
+          const data = await service.post('/project/findByName',{projectName:searchProp.value});
+          const projects = (data as unknown as { projects: Project[] }).projects;
+          ProjectTableData.value = projects
+        }
+        }else{
+          ElMessage.warning('请输入查询关键词')
+        }
+        
+      } else {
+        ElMessage.warning('请选择查询方式')
+      }
+
     }
-    function reset() {
+    async function reset() {
       console.log("重置")
       queryType.value = null;
       searchProp.value = null;
+      getProjects();
     }
     function handlePreview(row: any) {
       console.log('预览===>', row.id)
@@ -194,6 +210,7 @@ h1 {
   overflow: hidden;
   display: flex;
   align-items: center;
-  font-size: 16px; /* 增加字体大小 */
+  font-size: 16px;
+  /* 增加字体大小 */
 }
 </style>
