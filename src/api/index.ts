@@ -27,7 +27,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response: any) => {
         const data = response.data;
-        if (Object.prototype.hasOwnProperty.call(data, 'code')) {
+       /*  if (Object.prototype.hasOwnProperty.call(data, 'code')) {
             if (data.code === 1000) {
                 return data;
             } else if (data.code === 2000) {
@@ -44,7 +44,8 @@ service.interceptors.response.use(
             });
             return false;
         }
-    },
+    }, */
+    
     (error: AxiosError) => {
         if (error.response) {
             ElNotification.error({
@@ -54,6 +55,7 @@ service.interceptors.response.use(
         }
         return false;
     }
+    return data;}
 );
 
 export default service;
