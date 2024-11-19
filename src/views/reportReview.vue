@@ -89,6 +89,10 @@ export default defineComponent({
       label:'项目名称',
       value:'name'
     }])
+
+    onMounted(() => {
+      getProjects()
+    })
     const pagedProjects = computed(() => {
       return ProjectTableData.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize
           .value);

@@ -92,9 +92,9 @@ export default defineComponent({
         let searchProp = ref()
         const smallScreen = ref(window.innerWidth < 768);
         const direction = ref<DrawerProps['direction']>('rtl')
-          onMounted(() => {
-      getProjects()
-    })
+        onMounted(() => {
+          getProjects()
+        })
       async function getProjects() {
         const data = await service.get('/project/findAll');
         const projects = (data as unknown as { projects: Project[] }).projects;
