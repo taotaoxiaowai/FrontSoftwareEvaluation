@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-import { ElNotification } from 'element-plus';
+import { ElMessage, ElNotification } from 'element-plus';
 import { da } from 'element-plus/es/locale';
 // 定义响应数据的接口
 axios.defaults.withCredentials = true;
@@ -30,9 +30,8 @@ service.interceptors.response.use(
         if (Object.prototype.hasOwnProperty.call(data, 'isOk')) {
             if (data.isOk === true) {
                 return data;
-            } else if (data.code === false) {
-                ElNotification.warning({
-                    title: '提示',
+            } else if (data.isOk === false) {
+                ElMessage.warning({
                     message: data.msg
                 });
                 return false;

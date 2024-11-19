@@ -32,14 +32,15 @@
     <el-table-column prop="id" label="项目编号" align="center" />
     <el-table-column prop="projectName" label="项目名称" align="center" />
     <el-table-column prop="state" label="项目状态" align="center" />
-    <el-table-column prop="description" label="项目描述" align="center" />
+    <el-table-column prop="startTime" label="开始时间" align="center" />
+    <el-table-column prop="endTime" label="结束时间" align="center" />
     <el-table-column fixed="right" label="操作" min-width="60" align="center">
       <template #default="scope">
         <el-tooltip content="预览报告" effect="light" placement="top">
           <el-button type="primary" :icon="View" @click="handlePreview(scope.row); drawer = true"
             style="margin-right: 10px;" circle />
         </el-tooltip>
-        <el-tooltip content="生成并下载报告" effect="light" placement="top">
+        <el-tooltip content="下载报告" effect="light" placement="top">
           <el-button type="danger" :icon="Document" circle style="margin-right: 10px;"
             @click="downloadReport(scope.row)" /></el-tooltip>
       </template>
@@ -110,10 +111,11 @@ export default defineComponent({
       getProjects()
     })
     async function getProjects() {
-      const data = await service.get('/project/findAll');
-      const projects = (data as unknown as { projects: Project[] }).projects;
+      const data = await service.get('/project/findEvaluatedAll');
+      if(data){ const projects = (data as unknown as { projects: Project[] }).projects;
       ProjectTableData.value = projects
-      totalItems.value=projects.length
+      totalItems.value=ProjectTableData.value.length}
+     
       console.log(totalItems)
     }
     const handleSizeChange = (val: number) => {
@@ -132,12 +134,12 @@ export default defineComponent({
           const data = await service.post('/project/findById', { id: searchProp.value });
           const projects = [(data as unknown as { project: Project }).project];
           ProjectTableData.value = projects
-          totalItems.value=projects.length
+          totalItems.value=ProjectTableData.value.length
         }else if(queryType.value=='name'){
           const data = await service.post('/project/findByName',{projectName:searchProp.value});
           const projects = (data as unknown as { projects: Project[] }).projects;
           ProjectTableData.value = projects
-          totalItems.value=projects.length
+          totalItems.value=ProjectTableData.value.length
         }
         }else{
           ElMessage.warning('请输入查询关键词')
