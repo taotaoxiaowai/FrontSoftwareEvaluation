@@ -131,14 +131,16 @@ export default defineComponent({
       if (queryType.value != null) {
         if(searchProp.value!=null){
           if (queryType.value == 'id') {
-          const data = await service.post('/project/findById', { id: searchProp.value });
-          const projects = [(data as unknown as { project: Project }).project];
-          ProjectTableData.value = projects
+          const data = await service.post('/project/findEvaluatedProjectsByCondition', { id: searchProp.value });
+          if(data){
+          const projects = (data as unknown as { projects: Project[] }).projects;
+          ProjectTableData.value = projects}
           totalItems.value=ProjectTableData.value.length
         }else if(queryType.value=='name'){
-          const data = await service.post('/project/findByName',{projectName:searchProp.value});
+          const data = await service.post('/project/findEvaluatedProjectsByCondition',{projectName:searchProp.value});
+          if(data){
           const projects = (data as unknown as { projects: Project[] }).projects;
-          ProjectTableData.value = projects
+          ProjectTableData.value = projects}
           totalItems.value=ProjectTableData.value.length
         }
         }else{
