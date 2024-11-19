@@ -183,11 +183,9 @@ export default defineComponent({
     }
 
     const handleFileSuccess = (response:any, uploadFile:any) => {
-      console.log('response:', response);
-
-      const url = (response.data as unknown as { url: string }).url;
+      const url = (response as unknown as { url: string }).url;
+      console.log('url:', url);
       if (url) {
-
         fileUrl.value = url; // 设置上传成功的图片URL
         console.log('fileUrl:', fileUrl);
       } else {
@@ -216,6 +214,7 @@ export default defineComponent({
         const response = await service.post("/files/upload", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        console.log(response)
         onSuccess(response);
       } catch (error) {
         console.error("Upload error:", error);
