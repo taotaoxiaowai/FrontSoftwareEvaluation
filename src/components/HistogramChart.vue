@@ -14,6 +14,10 @@ export default {
         theme: {
             type: String,
             required: true
+        },
+        id:{
+            type: Number,
+            required: true
         }
     },
     setup(props: any) {
@@ -27,9 +31,13 @@ export default {
         };
         let mark=['阶段1', '阶段2', '阶段3', '阶段4']
         let count=[20, 40, 60, 80]
+        async function getDashBoardDatas(id:any) {
+      console.log(id)
+    }
         function initProgressChart() {
             const chartDom = document.getElementById('function-points-chart')!;
             functionPointsChart = echarts.init(chartDom, props.theme);
+            console.log(props.id)
             const option = {
                 title: { text: '子系统功能点数' },
                 xAxis: { type: 'category', data:mark },
@@ -43,11 +51,12 @@ export default {
             () => {
                 functionPointsChart?.dispose(); // 销毁旧图表实例
                 initProgressChart(); // 使用新主题重新初始化图表
+  
             }
         );
         return {
-            initProgressChart
-
+            initProgressChart,
+            getDashBoardDatas
         };
     }
 };

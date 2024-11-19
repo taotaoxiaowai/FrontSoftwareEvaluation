@@ -14,6 +14,10 @@ export default {
         theme: {
             type: String,
             required: true
+        },
+        id: {
+            type: Number,
+            required: true
         }
     },
     setup(props: any) {
@@ -21,12 +25,15 @@ export default {
         onMounted(() => {
             initProgressChart();
             window.addEventListener('resize', handleResize);
+            getDashBoardDatas(props.id)
         });
 
         const handleResize = () => {
             functionPointsScatterChart?.resize();
         };
-
+        async function getDashBoardDatas(id: any) {
+            console.log(id)
+        }
         function initProgressChart() {
             const chartDom = document.getElementById('function-points-scatter-chart')!;
             functionPointsScatterChart = echarts.init(chartDom, props.theme);
@@ -105,7 +112,7 @@ export default {
                 '#96BFFF'
             ];
             var pieces = [];
-           
+
             for (var i = 0; i < CLUSTER_COUNT; i++) {
                 pieces.push({
                     value: i,
@@ -115,8 +122,8 @@ export default {
             }
             const option = {
                 title: {
-              text: '功能点散点图'
-            },
+                    text: '功能点散点图'
+                },
                 dataset: [
                     {
                         source: data
@@ -149,8 +156,8 @@ export default {
                 grid: {
                     left: 120
                 },
-                xAxis: {name:'功能点数'},
-                yAxis: {name:'优先级'},
+                xAxis: { name: '功能点数' },
+                yAxis: { name: '优先级' },
                 series: {
                     type: 'scatter',
                     encode: { tooltip: [0, 1] },
@@ -170,10 +177,12 @@ export default {
                 }
             );
             return {
-                initProgressChart
+                initProgressChart,
+                getDashBoardDatas
             };
         }
-    }}
+    }
+}
 </script>
 
 <style scoped>

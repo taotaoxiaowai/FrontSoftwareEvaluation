@@ -43,11 +43,12 @@ const stages = ref<Stage[]>([{ "id": 1, "title": "项目创建", "date": "2024-1
 ]);
 
 // 接收 `theme` 参数（浅色或深色模式）
-const props = defineProps<{ theme: string }>();
+const props = defineProps<{ theme: string ,id:number}>();
 
 // 模拟后端数据获取函数，实际使用时可以通过 API 调用替换
 async function fetchProjectStages() {
   console.log(1)
+  console.log(props.id)
 }
 
 // 计算属性，根据 `theme` 返回对应的样式类
@@ -55,7 +56,9 @@ async function fetchProjectStages() {
   return props.theme === 'dark' ? 'dark-mode' : 'light-mode';
 }); 
 // 在组件挂载时获取数据
-onMounted(fetchProjectStages);
+onMounted(()=>{
+  fetchProjectStages()
+});
 </script>
 
 <style scoped>

@@ -38,7 +38,7 @@
       <template #default="scope">
         <el-tooltip content="查看评估反馈" effect="light" placement="top">
           <el-button type="primary" :icon="Search" circle style="margin-right: 10px;"
-                     @click="handlePreview(scope.row); drawer = true" />
+                     @click="handlePreview(scope.row)" />
         </el-tooltip>
       </template>
     </el-table-column>
@@ -147,6 +147,14 @@ export default defineComponent({
       router.push({ name: 'dashboards', query: { projectId: row.id } });
     }
     function handlePreview(row: any) {
+      console.log(row)
+      if(!(row.state==="审核未通过")){
+        console.log("1")
+        ElMessage.warning('只有未通过的项目才有项目反馈')
+      }
+      else{
+        drawer.value=true
+      }
       console.log('项目评审')
     }
     const handleClose = (done: () => void) => {

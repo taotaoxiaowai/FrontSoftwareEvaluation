@@ -54,9 +54,6 @@
     </el-col>
   </el-row>
   <div class="demo-pagination-block">
-    <el-pagination v-model:current-page="currentPage1" :page-size="100" :size="size" :disabled="disabled"
-      :background="background" layout="total,pager, prev, next,jumper" :total="totalItems"
-      @size-change="handleSizeChange" @current-change="handleCurrentChange" />
     <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="800">
       <el-row>
         <el-text class="mx-1">报告模板</el-text>

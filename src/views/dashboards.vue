@@ -3,15 +3,15 @@
     <el-row class="border_shadow" :style="{ backgroundColor: bgColor }">
       <el-col :span="1"><el-button :icon="Close" circle @click="router.back()" /></el-col>
       <el-col :span="6">
-          <area-chart-component v-if="isAreaChartComponentVisual"  :theme="theme"/>
-          <histogram-chart-component v-if="isHistogramChartComponentVisual"  :theme="theme"/>
+          <area-chart-component v-if="isAreaChartComponentVisual"  :theme="theme" :id="projectId"/>
+          <histogram-chart-component v-if="isHistogramChartComponentVisual"  :theme="theme" :id="projectId"/>
           </el-col>
         <el-col :span="12">
           <el-row>
-            <el-col><pie-chart-component v-if="isPieChartComponentVisual" :theme="theme"/></el-col>
-            <el-col> <scatter-plot-component v-if="isScatterPlotComponentVisual" :theme="theme" /></el-col>
+            <el-col><pie-chart-component v-if="isPieChartComponentVisual" :theme="theme" :id="projectId"/></el-col>
+            <el-col> <scatter-plot-component v-if="isScatterPlotComponentVisual" :theme="theme"  :id="projectId"/></el-col>
           </el-row>
-          <el-row><ProjectTimeline  v-if="isProjectTimelineVisual" :theme="theme"/></el-row>
+          <el-row><ProjectTimeline  v-if="isProjectTimelineVisual" :theme="theme"  :id="projectId"/></el-row>
         </el-col>
 
       <div class="divider"></div>
@@ -80,7 +80,7 @@ export default defineComponent({
     const theme = ref('light')
     const route = useRoute()
     const router = useRouter()
-    const { projectId } = route.query
+    const  projectId  = Number(route.query.projectId) || 0
     let isAreaChartComponentVisual = ref(false);
     let isHistogramChartComponentVisual = ref(false);
     let isPieChartComponentVisual = ref(false);

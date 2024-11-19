@@ -14,13 +14,18 @@ export default {
     theme: {
       type: String,
       required: true
-    }
+    } ,
+        id:{
+            type: Number,
+            required: true
+        }
   },
   setup(props: any) {
     let ApprovalChart: echarts.ECharts | null = null;
     onMounted(() => {
       InitApprovalPieChart();
       window.addEventListener('resize', handleResize);
+      getDashBoardDatas(props.id)
     });
     const handleResize = () => {
       ApprovalChart?.resize();
@@ -60,14 +65,20 @@ export default {
 
       ApprovalChart.setOption(option);
     }
+    async function getDashBoardDatas(id:any) {
+      console.log(id)
+    }
     watch(
       () => props.theme,
       () => {
         ApprovalChart?.dispose(); // 销毁旧图表实例
-        InitApprovalPieChart(); // 使用新主题重新初始化图表
+        InitApprovalPieChart(); 
+        // 使用新主题重新初始化图表
       }
     );
     return {
+      getDashBoardDatas,
+      InitApprovalPieChart
     };
   }
 };

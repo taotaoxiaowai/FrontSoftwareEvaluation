@@ -14,6 +14,10 @@ export default {
         theme: {
             type: String,
             required: true
+        },
+        id:{
+            type: Number,
+            required: true
         }
     },
     setup(props: any) {
@@ -21,7 +25,7 @@ export default {
         onMounted(() => {
             initEstimateReportChart()
             window.addEventListener('resize', handleResize)
-            console.log(props.theme)
+            getDashBoardDatas(props.id)
         })
         const handleResize = () => {
             estimateReportChart?.resize();
@@ -227,10 +231,12 @@ export default {
                 initEstimateReportChart(); // 使用新主题重新初始化图表
             }
         );
-
+        async function getDashBoardDatas(id:any) {
+      console.log(id)
+    }
         return {
             initEstimateReportChart,
-
+            getDashBoardDatas
         };
     }
 };
