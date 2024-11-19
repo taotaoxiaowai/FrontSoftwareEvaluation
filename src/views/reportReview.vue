@@ -52,20 +52,26 @@
                      layout="total, prev, pager, next" :total="totalItems">
       </el-pagination>
     </el-col>
-  <el-drawer v-model="drawer" title="项目评审" :direction="direction" :before-close="handleClose" :size="500">
+  <el-drawer v-model="drawer"  title="项目评审" :direction="direction" :before-close="handleClose" :size="500">
     <span>请选项报告是否通过审批</span>
     <div style="margin-top: 40px;"></div> <!-- 增加行距 -->
     <el-col>
-      <el-button size="medium" type="primary" @click="searchProject()" :icon="Search">审批通过</el-button>
-      <el-button size="medium"  @click="reset()">审批不通过</el-button>
+      <el-button size="medium" type="primary" @click="checkOk()" :icon="Search">审批通过</el-button>
+      <el-button size="medium"  @click="checkNo()">审批不通过</el-button>
     </el-col>
     <div style="margin-top: 40px;"></div>
-    <el-upload class="vedio-uploader" action="" :limit="1"
-               :on-success="handleFileSuccess" :before-upload="beforeFileUpload" :show-file-list="false">
-      <el-button size="medium" type="primary" :icon="RefreshLeft">点击上传</el-button>
-      <br>
-      <div class="el-upload__tip">只能上传doc\docx 文件，且不超过10MB</div>
-    </el-upload>
+    <el-upload
+        class="vedio-uploader"
+        :limit="1"
+        :on-success="handleFileSuccess"
+        :before-upload="beforeFileUpload"
+        :show-file-list="true"
+        :http-request="uploadFile"
+    >
+     <el-button size="medium" type="primary" :icon="RefreshLeft">点击上传</el-button>
+     <br>
+     <div class="el-upload__tip">只能上传doc\docx 文件，且不超过10MB</div>
+     </el-upload>
   </el-drawer>
   </div>
 </template>
@@ -73,12 +79,25 @@
 import {defineComponent, ref, onMounted, computed} from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
-import { Search, RefreshLeft, Document, Files } from '@element-plus/icons-vue'
-import {ComponentSize, DrawerProps, ElMessage,ElMessageBox} from 'element-plus'
+import {Search, RefreshLeft, Document, Files, FolderOpened} from '@element-plus/icons-vue'
+import {
+  ComponentSize,
+  DrawerProps,
+
+  ElMessage,
+  ElMessageBox,
+
+} from 'element-plus'
+import type {UploadFile } from 'element-plus'
 import service from '@/api';
 
 export default defineComponent({
   name: 'ProjectDashBoardListComponent',
+  computed: {
+    FolderOpened() {
+      return FolderOpened
+    }
+  },
   setup() {
     let ProjectTableData = ref<Project[]>([])
     let searchProjectData = ref<Project>()
@@ -95,7 +114,9 @@ export default defineComponent({
     const totalItems=ref(0)
     const pageSize = ref(5)
     const currentPage = ref(1)
-    const fileUrl = ref('')
+    const fileUrl = ref()
+    const drawerVisible = ref(false)
+    const rowId = ref('')
     const options=ref([{
       label:'项目编号',
       value:'id'
@@ -103,7 +124,7 @@ export default defineComponent({
       label:'项目名称',
       value:'name'
     }])
-
+    let rawFile=ref()
     onMounted(() => {
       getProjects()
     })
@@ -111,16 +132,62 @@ export default defineComponent({
       return ProjectTableData.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize
           .value);
     })
+
+  /*  const handleExceed: UploadProps['onExceed'] = (files) => {
+      console.log("uploadFile.value: " + uploadFile.value)
+      if (uploadFile.value) {
+        uploadFile.value.clearFiles();
+      }
+      const file = files[0] as UploadRawFile
+      file.uid = genFileId()
+      uploadFile.value!.handleStart(file)
+    }
+    async function uploadApkFile() {
+      let apkFormData=new FormData()
+      apkFormData.append('file',rawFile.value.raw)
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data;boundary=----WebKitFormBoundaryk4ZvuPo6pkphe7Pl'
+        }
+      };
+      try{
+        let {data}=await service.post('/files/upload',apkFormData,config)
+        const loading =ElLoading.service({
+          lock: true,
+          text: '文件上传中',
+          background: 'rgba(0, 0, 0, 0.7)',
+        })
+        if(data.isOk===true){
+          loading.close()
+          ElMessage.success("上传成功")
+        }else{
+          loading.close()
+          ElMessage.error("安装包上传失败")
+        }
+      }catch(error){
+        ElMessage.error("文件过大或格式不匹配")
+
+      }
+    }*/
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
     const handleCurrentChange = (val:number) => {
       currentPage.value = val;
     }
+    const changeFile = (uploadFile: UploadFile) => {
+      rawFile.value = uploadFile;
+      //rawFile.value = uploadFile.raw;
+      console.log("rawFile.value.raw=====>")
+      console.log(rawFile.value.raw)
+    }
+
     const handleFileSuccess = (response:any, uploadFile:any) => {
       console.log('response:', response);
-      const url = response.url; //尝试获取图片URL
+
+      const url = (response.data as unknown as { url: string }).url;
       if (url) {
+
         fileUrl.value = url; // 设置上传成功的图片URL
         console.log('fileUrl:', fileUrl);
       } else {
@@ -141,6 +208,21 @@ export default defineComponent({
       }
       return true;
     }
+    const uploadFile = async (options: any) => {
+      const { file, onSuccess, onError } = options;
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const response = await service.post("/files/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        onSuccess(response);
+      } catch (error) {
+        console.error("Upload error:", error);
+        onError(error);
+      }
+    };
+
     async function searchProject() {
       console.log("搜索===》")
       console.log(queryType.value)
@@ -183,11 +265,53 @@ export default defineComponent({
       totalItems.value=ProjectTableData.value.length}
       console.log(totalItems)
     }
+    async function checkOk(){
+      try {
+        // 假设 scope.row.id 是项目编号
+        const projectId = rowId
+        const isPass = true
+        const response = await service.post('/project/rejectReview', {
+          isPass: isPass,
+          projectId: projectId,
+          fileUrl: fileUrl.value,
+        });
+        ElMessage.success('审批提交成功！');
+        drawer.value = false;
+        getProjects(); // 更新项目列表
+      } catch (error) {
+        console.error('审批提交失败', error);
+        ElMessage.error('审批提交失败，请稍后重试！');
+      }
+      drawer.value = false;
+    }
+    async function checkNo() {
+      console.log(rowId.value)
+      if (!fileUrl.value) {
+        ElMessage.warning('请上传相关文件后再进行审批！');
+        return;
+      }
+      try {
+        // 假设 scope.row.id 是项目编号
+        const projectId = rowId
+        const isPass = false
+        const response = await service.post('/project/rejectReview', {
+          isPass: isPass,
+          projectId: projectId,
+          fileUrl: fileUrl.value,
+        });
+        ElMessage.success('审批提交成功！');
+        drawer.value = false;
+        getProjects(); // 更新项目列表
+      } catch (error) {
+        console.error('审批提交失败', error);
+        ElMessage.error('审批提交失败，请稍后重试！');
+      }
+    }
     function handleDashBoardClick(row: any) {
       router.push({ name: 'dashboards', query: { projectId: row.id } });
     }
     function handlePreview(row: any) {
-      console.log('项目评审')
+      rowId.value=row.id
     }
     const handleClose = (done: () => void) => {
       ElMessageBox.confirm('确定关闭评审页面？')
@@ -221,6 +345,8 @@ export default defineComponent({
       currentPage,
       pagedProjects,
       fileUrl,
+      drawerVisible,
+      rowId,
       searchProject,
       reset,
       handleSizeChange,
@@ -228,8 +354,12 @@ export default defineComponent({
       handleDashBoardClick,
       handlePreview,
       handleClose,
-      handleFileSuccess,
       beforeFileUpload,
+      uploadFile,
+      changeFile,
+      checkOk,
+      checkNo,
+      handleFileSuccess
     };
   }
 });
