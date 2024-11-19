@@ -52,7 +52,19 @@
       </el-pagination>
     </el-col>
   <el-drawer v-model="drawer" title="项目评审" :direction="direction" :before-close="handleClose" :size="500">
-    <span>Hi, there!</span>
+    <span>请选项报告是否通过审批</span>
+    <div style="margin-top: 40px;"></div> <!-- 增加行距 -->
+    <el-col>
+      <el-button size="medium" type="primary" @click="searchProject()" :icon="Search">审批通过</el-button>
+      <el-button size="medium"  @click="reset()">审批不通过</el-button>
+    </el-col>
+    <div style="margin-top: 40px;"></div>
+    <el-upload class="vedio-uploader" action="" :limit="1"
+               :on-success="handleFileSuccess" :before-upload="beforeFileUpload" :show-file-list="false">
+      <el-button size="medium" type="primary" :icon="RefreshLeft">点击上传</el-button>
+      <br>
+      <div class="el-upload__tip">只能上传doc\docx 文件，且不超过10MB</div>
+    </el-upload>
   </el-drawer>
   </div>
 </template>
@@ -80,8 +92,9 @@ export default defineComponent({
     const smallScreen = ref(window.innerWidth < 768)
     let searchProp = ref()
     const totalItems=ref(0)
-    const pageSize = ref(5);
-    const currentPage = ref(1);
+    const pageSize = ref(5)
+    const currentPage = ref(1)
+    const fileUrl = ref('')
     const options=ref([{
       label:'项目编号',
       value:'id'
@@ -96,13 +109,37 @@ export default defineComponent({
     const pagedProjects = computed(() => {
       return ProjectTableData.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize
           .value);
-    });
+    })
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
     const handleCurrentChange = (val:number) => {
       currentPage.value = val;
-    };
+    }
+    const handleFileSuccess = (response:any, uploadFile:any) => {
+      console.log('response:', response);
+      const url = response.url; //尝试获取图片URL
+      if (url) {
+        fileUrl.value = url; // 设置上传成功的图片URL
+        console.log('fileUrl:', fileUrl);
+      } else {
+        // 如果url不存在，你可以添加一个错误处理逻辑
+        console.error('Error:response.data.url is undefined');
+      }
+    }
+    const beforeFileUpload = (rawFile:any) =>{
+      // 检查文件类型，允许的文件类型包括'image/jpeg'，'image/png'，'image/ipg
+      console.log(rawFile.type)
+      if (!['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'].includes(rawFile.type)) {
+        ElMessage.error('文件格式需为doc/docx格式!');
+        return false;
+      } // 检查文件大小，不超过10MB
+      else if (rawFile.size / 1024 / 1024 > 10) {
+        ElMessage.error('视频大小不能超过10MB!');
+        return false;
+      }
+      return true;
+    }
     async function searchProject() {
       console.log("搜索===》")
       console.log(queryType.value)
@@ -179,6 +216,7 @@ export default defineComponent({
       pageSize,
       currentPage,
       pagedProjects,
+      fileUrl,
       searchProject,
       reset,
       handleSizeChange,
@@ -186,6 +224,8 @@ export default defineComponent({
       handleDashBoardClick,
       handlePreview,
       handleClose,
+      handleFileSuccess,
+      beforeFileUpload,
     };
   }
 });
@@ -217,5 +257,12 @@ h1 {
   display: flex;
   align-items: center;
   font-size: 16px; /* 增加字体大小 */
+}
+.vedio-uploader  {
+
+}
+.vedio-uploader .el-upload__tip {
+  margin-top: 10px; /* 在按钮下方添加一些间隔 */
+  color: #999; /* 提示文字颜色，可根据需要调整 */
 }
 </style>
