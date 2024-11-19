@@ -118,10 +118,12 @@ export default defineComponent({
           const data = await service.post('/project/findById', { id: searchProp.value });
           const projects = [(data as unknown as { project: Project }).project];
           ProjectTableData.value = projects
+          totalItems.value=projects.length
         }else if(queryType.value=='name'){
           const data = await service.post('/project/findByName',{projectName:searchProp.value});
           const projects = (data as unknown as { projects: Project[] }).projects;
           ProjectTableData.value = projects
+          totalItems.value=projects.length
         }
         }else{
           ElMessage.warning('请输入查询关键词')
