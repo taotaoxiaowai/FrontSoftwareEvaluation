@@ -185,11 +185,9 @@ export default defineComponent({
         onError(error);
       }
     };
-    async function downloadFile() {
-      const data = await service.post('/project/findToBeReviewedByCondition', { id: searchProp.value });
-      if(data){
-        const fileUrl = (data as unknown as { projects: Project[] }).projects;
-      }
+    async function downloadFile(row:any) {
+      // 使用 service 实例发送 POST 请求，并在 URL 查询字符串中包含 id 参数
+      await service.post(`/downloadReturn?id=${row.id.value}`)
     }
     async function searchProject() {
       console.log("搜索===》")

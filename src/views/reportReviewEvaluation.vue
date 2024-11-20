@@ -38,7 +38,7 @@
       <template #default="scope">
         <el-tooltip content="查看评估反馈" effect="light" placement="top">
           <el-button type="primary" :icon="Search" circle style="margin-right: 10px;"
-                     @click="handlePreview(scope.row)" />
+                     @click="downloadFile(scope.row)" />
         </el-tooltip>
       </template>
     </el-table-column>
@@ -63,6 +63,7 @@ import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files } from '@element-plus/icons-vue'
 import {ComponentSize, DrawerProps, ElMessage,ElMessageBox} from 'element-plus'
 import service from '@/api';
+import * as url from "url";
 export default defineComponent({
   name: 'ProjectDashBoardListComponent',
   setup() {
@@ -109,6 +110,38 @@ export default defineComponent({
     const handleCurrentChange = (val:number) => {
       currentPage.value = val;
     };
+    async function downloadFile(row: any) {
+      console.log(row.id);
+
+      try {
+        // 向后端发送 POST 请求，获取下载链接
+        const response = await service.post(`/report/downloadReturn`, { id: row.id });
+        console.log(response.url)
+        // 检查响应内容是否有效
+        if (!response || !response.url || !response.isOk) {
+          throw new Error('未能成功获取下载链接');
+        }
+        // 提取下载链接
+        const downloadUrl = (response as unknown as { url: string }).url;
+
+        if (!downloadUrl) {
+          throw new Error('下载链接为空');
+        }
+
+        // 直接触发下载
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.setAttribute('download', ''); // 可选：后端未提供文件名时，浏览器会根据 URL 推断
+        document.body.appendChild(link);
+        link.click();
+
+        // 移除链接元素
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error('下载失败:', error);
+        alert('文件下载失败，请重试！');
+      }
+    }
     async function searchProject() {
       console.log("搜索===》")
       console.log(queryType.value)
@@ -194,6 +227,7 @@ export default defineComponent({
       handleDashBoardClick,
       handlePreview,
       handleClose,
+      downloadFile,
     };
   }
 });
