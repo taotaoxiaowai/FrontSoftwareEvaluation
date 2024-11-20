@@ -185,9 +185,13 @@ export default defineComponent({
         onError(error);
       }
     };
-    async function downloadFile(row:any) {
-      // 使用 service 实例发送 POST 请求，并在 URL 查询字符串中包含 id 参数
-      await service.post(`/downloadReturn?id=${row.id.value}`)
+    function downloadFile(row: any) {
+      const link = document.createElement("a");
+      link.href = "http://localhost:9000/report/download?id="+row.id; // 设置文件下载链接
+      link.download = ""; // 可选，设置下载后的文件名
+      document.body.appendChild(link); // 将链接添加到 DOM 中
+      link.click(); // 触发点击事件
+      document.body.removeChild(link); // 删除链接
     }
     async function searchProject() {
       console.log("搜索===》")
