@@ -49,7 +49,7 @@
   <el-row type="flex" justify="center" align="middle">
     <el-col :span="18">
       <el-pagination @current-change="handleCurrentChange" :current-page="currentPage1" :page-size="pageSize"
-                     layout="total, prev, pager, next" :total="totalItems">
+        layout="total, prev, pager, next" :total="totalItems">
       </el-pagination>
     </el-col>
   </el-row>
@@ -69,17 +69,17 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, ref, onMounted, computed,watch} from 'vue';
+import { defineComponent, ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files, View } from '@element-plus/icons-vue'
 import type { ComponentSize, DrawerProps } from 'element-plus'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox, ElLoading } from 'element-plus'
 import service from '@/api';
 import PdfPreView from '@/components/PdfPreView.vue';
 export default defineComponent({
   name: 'ProjectGenerationComponent',
-  components:{
+  components: {
     PdfPreView
   },
   setup() {
@@ -95,32 +95,34 @@ export default defineComponent({
     const drawer = ref(false)
     const direction = ref<DrawerProps['direction']>('rtl')
     const queryType = ref()
-    const totalItems=ref(0)
+    const totalItems = ref(0)
     const pageSize = ref(5);
     const currentPage = ref(1);
-    const pdfUrl=ref([])
-    const docxUrl=ref([])
-    const pdfPreviewUrl=ref()
-    const options=ref([{
-      label:'项目编号',
-      value:'id'
-    },{
-      label:'项目名称',
-      value:'name'
+    const pdfUrl = ref([])
+    const docxUrl = ref([])
+    const pdfPreviewUrl = ref()
+    const options = ref([{
+      label: '项目编号',
+      value: 'id'
+    }, {
+      label: '项目名称',
+      value: 'name'
     }])
     const pagedProjects = computed(() => {
       return ProjectTableData.value.slice((currentPage.value - 1) * pageSize.value, currentPage.value * pageSize
-          .value);
+        .value);
     });
     onMounted(() => {
       getProjects()
     })
     async function getProjects() {
       const data = await service.get('/project/findEvaluatedAll');
-      if(data){ const projects = (data as unknown as { projects: Project[] }).projects;
-      ProjectTableData.value = projects
-      totalItems.value=ProjectTableData.value.length}
-     
+      if (data) {
+        const projects = (data as unknown as { projects: Project[] }).projects;
+        ProjectTableData.value = projects
+        totalItems.value = ProjectTableData.value.length
+      }
+
       console.log(totalItems)
     }
     const handleSizeChange = (val: number) => {
@@ -134,24 +136,26 @@ export default defineComponent({
       console.log(queryType.value)
       console.log(searchProp.value)
       if (queryType.value != null) {
-        if(searchProp.value!=null){
+        if (searchProp.value != null) {
           if (queryType.value == 'id') {
-          const data = await service.post('/project/findEvaluatedProjectsByCondition', { id: searchProp.value });
-          if(data){
-          const projects = (data as unknown as { projects: Project[] }).projects;
-          ProjectTableData.value = projects}
-          totalItems.value=ProjectTableData.value.length
-        }else if(queryType.value=='name'){
-          const data = await service.post('/project/findEvaluatedProjectsByCondition',{projectName:searchProp.value});
-          if(data){
-          const projects = (data as unknown as { projects: Project[] }).projects;
-          ProjectTableData.value = projects}
-          totalItems.value=ProjectTableData.value.length
-        }
-        }else{
+            const data = await service.post('/project/findEvaluatedProjectsByCondition', { id: searchProp.value });
+            if (data) {
+              const projects = (data as unknown as { projects: Project[] }).projects;
+              ProjectTableData.value = projects
+            }
+            totalItems.value = ProjectTableData.value.length
+          } else if (queryType.value == 'name') {
+            const data = await service.post('/project/findEvaluatedProjectsByCondition', { projectName: searchProp.value });
+            if (data) {
+              const projects = (data as unknown as { projects: Project[] }).projects;
+              ProjectTableData.value = projects
+            }
+            totalItems.value = ProjectTableData.value.length
+          }
+        } else {
           ElMessage.warning('请输入查询关键词')
         }
-        
+
       } else {
         ElMessage.warning('请选择查询方式')
       }
@@ -164,47 +168,59 @@ export default defineComponent({
       getProjects();
     }
     async function getPreviewReports(row: any) {
-      const data=await service.post('/report/review',{
-        id:row.id,
-        projectName:row.projectName
+      /* const loading = ElLoading.service({
+        lock: true,
+        text: '加载数据中',
+        background: 'rgba(0, 0, 0, 0.7)',
+      }) */
+      const data = await service.post('/report/review', {
+        id: row.id,
+        projectName: row.projectName
       })
-      if(data){
-         pdfUrl.value = (data as unknown as { pdfs: [] }).pdfs;
-         //docxUrl.value=(data as unknown as { docs: [] }).docs;
-         if(templateStyle.value==1){
-          pdfPreviewUrl.value=pdfUrl.value[0]
-         }else if(templateStyle.value==2){
-          pdfPreviewUrl.value=pdfUrl.value[1]
-         }else if(templateStyle.value==3){
-          pdfPreviewUrl.value=pdfUrl.value[2]
-         }
+      if (data) {
+        //loading.close()
+        pdfUrl.value = (data as unknown as { pdfs: [] }).pdfs;
+        //docxUrl.value=(data as unknown as { docs: [] }).docs;
+        if (templateStyle.value == 1) {
+          pdfPreviewUrl.value = pdfUrl.value[0]
+        } else if (templateStyle.value == 2) {
+          pdfPreviewUrl.value = pdfUrl.value[1]
+        } else if (templateStyle.value == 3) {
+          pdfPreviewUrl.value = pdfUrl.value[2]
+        }
       }
     }
     watch(
-            () => templateStyle.value,
-            () => {
-              if(templateStyle.value==1){
-          pdfPreviewUrl.value=pdfUrl.value[0]
-         }else if(templateStyle.value==2){
-          pdfPreviewUrl.value=pdfUrl.value[1]
-         }else if(templateStyle.value==3){
-          pdfPreviewUrl.value=pdfUrl.value[2]
-         }
-            }
-        );
+      () => templateStyle.value,
+      () => {
+        if (templateStyle.value == 1) {
+          pdfPreviewUrl.value = pdfUrl.value[0]
+        } else if (templateStyle.value == 2) {
+          pdfPreviewUrl.value = pdfUrl.value[1]
+        } else if (templateStyle.value == 3) {
+          pdfPreviewUrl.value = pdfUrl.value[2]
+        }
+      }
+    );
     function downloadReport(row: any) {
-      console.log('下载报告===>', row.id)
+      const link = document.createElement("a");
+      link.href = "http://localhost:9000/report/download?id="+row.id+"&type="+templateStyle.value; // 设置文件下载链接
+      link.download = ""; // 可选，设置下载后的文件名
+      document.body.appendChild(link); // 将链接添加到 DOM 中
+      link.click(); // 触发点击事件
+      document.body.removeChild(link); // 删除链接
     }
     const handleClose = (done: () => void) => {
-      ElMessageBox.confirm('确定选择模板'+templateStyle.value+'?')
+      ElMessageBox.confirm('确定选择模板' + templateStyle.value + '?')
         .then(() => {
+          pdfPreviewUrl.value = ""
           done()
         })
         .catch(() => {
           // catch error
         })
     }
-   
+
 
     return {
       Document,
