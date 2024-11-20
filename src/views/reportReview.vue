@@ -37,7 +37,7 @@
     <el-table-column fixed="right" label="操作" min-width="60" align="center">
       <template #default="scope">
         <el-tooltip content="查看报告" effect="light" placement="top">
-          <el-button type="primary" :icon="Search"
+          <el-button type="primary" :icon="Search" @click="downloadFile(scope.row);"
                      style="margin-right: 10px;" circle/>
         </el-tooltip>
         <el-tooltip content="报告评审" effect="light" placement="top">
@@ -185,7 +185,12 @@ export default defineComponent({
         onError(error);
       }
     };
-
+    async function downloadFile() {
+      const data = await service.post('/project/findToBeReviewedByCondition', { id: searchProp.value });
+      if(data){
+        const fileUrl = (data as unknown as { projects: Project[] }).projects;
+      }
+    }
     async function searchProject() {
       console.log("搜索===》")
       console.log(queryType.value)
@@ -237,6 +242,7 @@ export default defineComponent({
         const response = await service.post('/project/updateState', {
           id: projectId.value,
           state: isPass,
+          returnAddress: fileUrl.value,
         });
         ElMessage.success('审批提交成功！');
         drawer.value = false;
@@ -256,11 +262,11 @@ export default defineComponent({
       try {
         // 假设 scope.row.id 是项目编号
         const projectId = rowId
-        const isPass = false
-        const response = await service.post('/project/rejectReview', {
-          isPass: isPass,
-          projectId: projectId,
-          fileUrl: fileUrl.value,
+        const isPass = '审核未通过'
+        const response = await service.post('/project/updateState', {
+          id: projectId.value,
+          state: isPass,
+          returnAddress: fileUrl.value,
         });
         ElMessage.success('审批提交成功！');
         drawer.value = false;
@@ -322,7 +328,8 @@ export default defineComponent({
       changeFile,
       checkOk,
       checkNo,
-      handleFileSuccess
+      handleFileSuccess,
+      downloadFile
     };
   }
 });

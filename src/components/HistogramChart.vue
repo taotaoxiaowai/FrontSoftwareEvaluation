@@ -39,7 +39,7 @@ export default {
         let mark = ref<string[]>([])
         let count = ref<number[]>([])
         async function getDashBoardDatas(id: any) {
-            const data = await service.post('/functionProject/UFP', { id: 1 })
+            const data = await service.post('/functionProject/UFP', { id: 5 })
             if (data) {
                 console.log('Data:', data);
                 functionPoints.value = (data as unknown as { functionPoints: FunctionPoint[] }).functionPoints;
