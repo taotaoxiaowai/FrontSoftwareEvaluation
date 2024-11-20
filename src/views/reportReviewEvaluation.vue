@@ -63,7 +63,7 @@ import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files } from '@element-plus/icons-vue'
 import {ComponentSize, DrawerProps, ElMessage,ElMessageBox} from 'element-plus'
 import service from '@/api';
-import * as url from "url";
+
 export default defineComponent({
   name: 'ProjectDashBoardListComponent',
   setup() {
@@ -116,13 +116,13 @@ export default defineComponent({
       try {
         // 向后端发送 POST 请求，获取下载链接
         const response = await service.post(`/report/downloadReturn`, { id: row.id });
-        console.log(response.url)
-        // 检查响应内容是否有效
-        if (!response || !response.url || !response.isOk) {
-          throw new Error('未能成功获取下载链接');
-        }
         // 提取下载链接
         const downloadUrl = (response as unknown as { url: string }).url;
+        const isOk = (response as unknown as { isok: string }).isok;
+        // 检查响应内容是否有效
+        if (!response || !downloadUrl || !isOk) {
+          throw new Error('未能成功获取下载链接');
+        }
 
         if (!downloadUrl) {
           throw new Error('下载链接为空');
