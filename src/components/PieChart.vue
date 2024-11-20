@@ -6,8 +6,12 @@
 
 <script lang="ts">
 import * as echarts from 'echarts';
-import { onMounted, watch } from 'vue';
+import {onMounted, ref, watch} from 'vue';
 
+interface pieChart{
+  value : number,
+  name : string
+}
 export default {
   name: 'PieChartComponent',
   props: {
@@ -33,16 +37,24 @@ export default {
     function InitApprovalPieChart() {
       const chartDom = document.getElementById('approval-chart')!;
       ApprovalChart = echarts.init(chartDom, props.theme);
-      let contributionData= [
-              { value: 40, name: 'rose 1' },
-              { value: 38, name: 'rose 2' },
-              { value: 32, name: 'rose 3' },
-              { value: 30, name: 'rose 4' },
-              { value: 28, name: 'rose 5' },
-              { value: 26, name: 'rose 6' },
-              { value: 22, name: 'rose 7' },
-              { value: 18, name: 'rose 8' }
-            ]
+      const rowContributionData= ref<pieChart[][]>([[
+        { value: 65, name: '罗金璐' },
+        { value: 59, name: '何博艺' },
+        { value: 50, name: '关洁' },
+        { value: 30, name: '笪亦佳' },
+        { value: 35, name: '谷金杰' },
+      ],[
+        { value: 75, name: '韩雨' },
+        { value: 66, name: '徐鹤原' },
+        { value: 32, name: '陈祉夷' },
+        { value: 40, name: '李四' },
+      ],[
+        { value: 67, name: '张三' },
+        { value: 78, name: '王五' },
+        { value: 52, name: '小六' },
+        { value: 40, name: '李四' },
+      ]])
+      let contributionData = rowContributionData.value[props.id%2]
       const option = {
         
         title: {
