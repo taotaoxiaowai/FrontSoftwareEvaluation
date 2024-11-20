@@ -69,7 +69,7 @@ onMounted(()=>{
 
 /* 深色模式样式 */
 .dark-mode {
-  background-color: #000022;
+  background-color: #100c2a;
   color: #fff;
 }
 

@@ -69,7 +69,7 @@
 <script lang="ts">
 import { defineComponent, ref,onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-
+import service from './api';
 interface Tab {
   name: string;
   label: string;
@@ -95,14 +95,12 @@ export default defineComponent({
       { name: 'reportReviewEvaluation', label: '评估报告审核', roles: ['role1'] }
     ]);
     const filteredMenuItems = ref(menuItems.value.filter(item => item.roles.includes('role2' as string)));
-    onMounted(()=>{
+    onMounted(async ()=>{
       const localTab=localStorage.getItem('activeTab')
       if(localTab){
         openTab(localTab)
       }
-      
   } )
-
     const getTabLabel = (tabName: string) => {
       switch (tabName) {
         case 'course':

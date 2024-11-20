@@ -6,7 +6,8 @@
 
 <script lang="ts">
 import * as echarts from 'echarts';
-import { onMounted, watch } from 'vue';
+import { onMounted, watch, ref } from 'vue';
+import service from '@/api';
 
 export default {
     name: 'HistogramChartComponent',
@@ -15,43 +16,68 @@ export default {
             type: String,
             required: true
         },
-        id:{
+        id: {
             type: Number,
             required: true
         }
     },
+
     setup(props: any) {
         let functionPointsChart: echarts.ECharts | null = null;
+        let functionPoints = ref<FunctionPoint[]>([])
+        interface FunctionPoint {
+            name: string;
+            ufp: number;
+        }
         onMounted(() => {
-            initProgressChart();
             window.addEventListener('resize', handleResize);
+            getDashBoardDatas(props.id)
         });
         const handleResize = () => {
             functionPointsChart?.resize();
         };
-        let mark=['阶段1', '阶段2', '阶段3', '阶段4']
-        let count=[20, 40, 60, 80]
-        async function getDashBoardDatas(id:any) {
-      console.log(id)
-    }
+        let mark = ref<string[]>([])
+        let count = ref<number[]>([])
+        async function getDashBoardDatas(id: any) {
+            const data = await service.post('/functionProject/UFP', { id: 1 })
+            if (data) {
+                console.log('Data:', data);
+                functionPoints.value = (data as unknown as { functionPoints: FunctionPoint[] }).functionPoints;
+                clearData()
+                functionPoints.value.forEach(element => {
+                    mark.value.push(element.name)
+                    count.value.push(element.ufp)
+                });
+                initProgressChart()
+            }
+        }
         function initProgressChart() {
             const chartDom = document.getElementById('function-points-chart')!;
             functionPointsChart = echarts.init(chartDom, props.theme);
-            console.log(props.id)
             const option = {
                 title: { text: '子系统功能点数' },
-                xAxis: { type: 'category', data:mark },
-                yAxis: { type: 'value' },
-                series: [{ data:count , type: 'bar' }]
+                tooltip: {
+                    trigger: 'item', // 鼠标悬停在柱状图的某个元素上时触发 tooltip
+                    formatter: (params: any) => {
+                        // 自定义 tooltip 内容
+                        return `${params.name}: ${params.value} UFP`;
+                    }
+                },
+                xAxis: { type: 'category', data: mark.value },
+                yAxis: { type: 'value', name: 'UFP' },
+                series: [{ data: count.value, type: 'bar' }]
             };
             functionPointsChart.setOption(option);
+        }
+        function clearData(){
+            mark.value=[]
+            count.value=[]
         }
         watch(
             () => props.theme,
             () => {
                 functionPointsChart?.dispose(); // 销毁旧图表实例
-                initProgressChart(); // 使用新主题重新初始化图表
-  
+                getDashBoardDatas(props.id); // 使用新主题重新初始化图表
             }
         );
         return {

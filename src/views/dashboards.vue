@@ -13,7 +13,6 @@
           </el-row>
           <el-row><ProjectTimeline  v-if="isProjectTimelineVisual" :theme="theme"  :id="projectId"/></el-row>
         </el-col>
-
       <div class="divider"></div>
       <el-col :span="4">
         <el-row style="align-items:center;">
@@ -91,7 +90,7 @@ export default defineComponent({
       () => theme.value,
       () => {
         if(theme.value=='light')bgColor.value='#efe8e8'
-        else bgColor.value='#000022'
+        else bgColor.value='#100c2a'
       }
     );
     console.log('项目id', projectId)

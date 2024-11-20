@@ -232,14 +232,14 @@ export default defineComponent({
           const data = await service.post('/project/findToBeReviewedByCondition', { id: searchProp.value });
           if(data){
           const projects = (data as unknown as { projects: Project[] }).projects;
-          console.log(projects)
           ProjectTableData.value = projects}
           totalItems.value=ProjectTableData.value.length
         }else if(queryType.value=='name'){
           const data = await service.post('/project/findToBeReviewedByCondition',{projectName:searchProp.value});
           if(data){
           const projects = (data as unknown as { projects: Project[] }).projects;
-          ProjectTableData.value = projects}
+          ProjectTableData.value = projects
+         }
           totalItems.value=ProjectTableData.value.length
         }
         }else{

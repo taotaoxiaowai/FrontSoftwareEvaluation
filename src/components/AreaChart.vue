@@ -6,8 +6,8 @@
 
 <script lang="ts">
 import * as echarts from 'echarts';
-import { onMounted, watch } from 'vue';
-
+import { onMounted, watch ,ref} from 'vue';
+import service from '@/api';
 export default {
     name: 'AreaChartComponent',
     props: {
@@ -23,20 +23,31 @@ export default {
     setup(props: any) {
         let estimateReportChart: echarts.ECharts | null = null;
         onMounted(() => {
-            initEstimateReportChart()
             window.addEventListener('resize', handleResize)
             getDashBoardDatas(props.id)
         })
+        interface FunctionPoint{
+            "subsystem": string,
+            "complexities": string,
+            "subFunctionName": string,
+            "ilf":number,
+            "eif": number,
+            "eq": number,
+            "ei": number,
+            "eo": number,
+            "ufp": number,
+            "dfp": number
+        }
         const handleResize = () => {
             estimateReportChart?.resize();
         };
         let mark=['EIF', 'ILF', 'EQ', 'EO', 'EI']
-        let time=['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        let EIFCount=[140, 232, 101, 264, 90, 340, 250]
-        let ILFCount=[120, 282, 111, 234, 220, 340, 310]
-        let EQCount=[320, 132, 201, 334, 190, 130, 220]
-        let EoCount=[220, 402, 231, 134, 190, 230, 120]
-        let fiveCount=[220, 302, 181, 234, 210, 290, 150]
+        let subsystems=ref<string[]>([])
+        let EIFCount=ref<number[]>([])
+        let ILFCount=ref<number[]>([])
+        let EQCount=ref<number[]>([])
+        let EoCount=ref<number[]>([])
+        let EICount=ref<number[]>([])
         function initEstimateReportChart() {
             const chartDom = document.getElementById('function-points-area-chart')!;
             estimateReportChart = echarts.init(chartDom, props.theme);
@@ -54,12 +65,6 @@ export default {
                         }
                     }
                 },
-               
-                toolbox: {
-                    feature: {
-                        saveAsImage: {}
-                    }
-                },
                 grid: {
                     left: '3%',
                     right: '4%',
@@ -70,7 +75,14 @@ export default {
                     {
                         type: 'category',
                         boundaryGap: false,
-                        data: time
+                        data: subsystems.value,
+                        axisLabel: {
+                interval: 0, // 使得所有标签都显示
+                rotate: 45,  // 如果标签过长，可以旋转标签
+                formatter: (value:string) => {
+                    return value.length > 10 ? value.substring(0, 10) + '...' : value; // 截短过长的标签
+                }
+            }
                     }
                 ],
                 yAxis: [
@@ -104,7 +116,7 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: EIFCount
+                        data: EIFCount.value
                     },
                     {
                         name: mark[1],
@@ -131,7 +143,7 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: ILFCount
+                        data: ILFCount.value
                     },
                     {
                         name: mark[2],
@@ -158,7 +170,7 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: EQCount
+                        data: EQCount.value
                     },
                     {
                         name: mark[3],
@@ -185,7 +197,7 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: EoCount
+                        data: EoCount.value
                     },
                     {
                         name: mark[4],
@@ -216,7 +228,7 @@ export default {
                         emphasis: {
                             focus: 'series'
                         },
-                        data: fiveCount
+                        data: EICount.value
                     }
                 ]
             };
@@ -228,11 +240,32 @@ export default {
             () => props.theme,
             () => {
                 estimateReportChart?.dispose(); // 销毁旧图表实例
-                initEstimateReportChart(); // 使用新主题重新初始化图表
+                getDashBoardDatas(props.id); // 使用新主题重新初始化图表
             }
         );
         async function getDashBoardDatas(id:any) {
-      console.log(id)
+            const data = await service.post('/dashboard/getFunctionNum', { id: 1 })
+            if (data) {
+               const functionPoints = (data as unknown as { functionPoints: FunctionPoint[] }).functionPoints;
+               clearData()
+               functionPoints.forEach(element => {
+                   subsystems.value.push(element.subsystem)
+                   EIFCount.value.push(element.eif)
+                   ILFCount.value.push(element.ilf)
+                   EQCount.value.push(element.eq)
+                   EICount.value.push(element.ei)
+                   EoCount.value.push(element.eo)
+                });
+                initEstimateReportChart()
+            }
+    }
+    function clearData(){
+        subsystems.value=[]
+        EICount.value=[]
+        EIFCount.value=[]
+        ILFCount.value=[]
+        EQCount.value=[]
+        EoCount.value=[]
     }
         return {
             initEstimateReportChart,
