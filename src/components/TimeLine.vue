@@ -25,6 +25,9 @@
 
 <script lang="ts" setup>
 import { ref, computed, onMounted, defineProps} from 'vue';
+import service from "@/api";
+import {Project} from "@/types/ProjectType";
+import {ElMessage} from "element-plus";
 
 // 定义项目阶段的数据类型
 interface Stage {
@@ -38,7 +41,7 @@ interface Stage {
 // 使用 ref 创建响应式数据
 const stages = ref<Stage[]>([{ "id": 1, "title": "项目创建", "date": "2024-10-01", "description": "完成项目的创建工作并上传相关的评估材料", "completed": true },
                                   { "id": 2, "title": "项目评估", "date": "2024-11-01", "description": "通过相关材料完成对项目功能点的评估工作", "completed": true },
-                                  { "id": 3, "title": "评估审核", "date": "2024-12-01", "description": "生成相关评审报告审核人员完成对报告的审核", "completed": false },
+                                  { "id": 3, "title": "评估审核", "date": "2024-12-01", "description": "生成相关评审报告审核人员完成对报告的审核", "completed": true },
                                   { "id": 4, "title": "项目完成", "date": "2025-01-01", "description": "项目审核工作完成后发布项目报表和数据看板", "completed": false },
 ]);
 
@@ -47,14 +50,22 @@ const props = defineProps<{ theme: string ,id:number}>();
 
 // 模拟后端数据获取函数，实际使用时可以通过 API 调用替换
 async function fetchProjectStages() {
-  console.log(1)
   console.log(props.id)
+  const data = await service.post('/project/findTimeById', { id: props.id });
+  if(data){
+    const projectStartTime = (data as unknown as { projectStartTime: string }).projectStartTime;
+    const projectEndTime = (data as unknown as { projectEndTime: string }).projectEndTime;
+    stages.value[0].date=projectStartTime.slice(0,10)
+    stages.value[3].date=projectEndTime.slice(0,10)
+    console.log(projectStartTime)
+  }
 }
 
 // 计算属性，根据 `theme` 返回对应的样式类
  const themeClass = computed(() => {
   return props.theme === 'dark' ? 'dark-mode' : 'light-mode';
-}); 
+});
+
 // 在组件挂载时获取数据
 onMounted(()=>{
   fetchProjectStages()

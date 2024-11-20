@@ -116,7 +116,7 @@ export default defineComponent({
     const currentPage = ref(1)
     const fileUrl = ref()
     const drawerVisible = ref(false)
-    const rowId = ref('')
+    const rowId = ref<number>(0)
     const options=ref([{
       label:'项目编号',
       value:'id'
@@ -133,42 +133,6 @@ export default defineComponent({
           .value);
     })
 
-  /*  const handleExceed: UploadProps['onExceed'] = (files) => {
-      console.log("uploadFile.value: " + uploadFile.value)
-      if (uploadFile.value) {
-        uploadFile.value.clearFiles();
-      }
-      const file = files[0] as UploadRawFile
-      file.uid = genFileId()
-      uploadFile.value!.handleStart(file)
-    }
-    async function uploadApkFile() {
-      let apkFormData=new FormData()
-      apkFormData.append('file',rawFile.value.raw)
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data;boundary=----WebKitFormBoundaryk4ZvuPo6pkphe7Pl'
-        }
-      };
-      try{
-        let {data}=await service.post('/files/upload',apkFormData,config)
-        const loading =ElLoading.service({
-          lock: true,
-          text: '文件上传中',
-          background: 'rgba(0, 0, 0, 0.7)',
-        })
-        if(data.isOk===true){
-          loading.close()
-          ElMessage.success("上传成功")
-        }else{
-          loading.close()
-          ElMessage.error("安装包上传失败")
-        }
-      }catch(error){
-        ElMessage.error("文件过大或格式不匹配")
-
-      }
-    }*/
     const handleSizeChange = (val: number) => {
       console.log(`${val} items per page`)
     }
@@ -268,11 +232,11 @@ export default defineComponent({
       try {
         // 假设 scope.row.id 是项目编号
         const projectId = rowId
-        const isPass = true
-        const response = await service.post('/project/rejectReview', {
-          isPass: isPass,
-          projectId: projectId,
-          fileUrl: fileUrl.value,
+        const isPass = "审核通过"
+        type ProjectIdValueType = typeof projectId['value'];
+        const response = await service.post('/project/updateState', {
+          id: projectId.value,
+          state: isPass,
         });
         ElMessage.success('审批提交成功！');
         drawer.value = false;
