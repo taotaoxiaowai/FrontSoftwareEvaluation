@@ -244,7 +244,7 @@ export default {
             }
         );
         async function getDashBoardDatas(id:any) {
-            const data = await service.post('/dashboard/getFunctionNum', { id: 5 })
+            const data = await service.post('/dashboard/getFunctionNum', { id: id })
             if (data) {
                const functionPoints = (data as unknown as { functionPoints: FunctionPoint[] }).functionPoints;
                clearData()
