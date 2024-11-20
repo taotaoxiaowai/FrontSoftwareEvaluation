@@ -37,7 +37,7 @@
     <el-table-column fixed="right" label="操作" min-width="60" align="center">
       <template #default="scope">
         <el-tooltip content="预览报告" effect="light" placement="top">
-          <el-button type="primary" :icon="View" @click="handlePreview(scope.row); drawer = true"
+          <el-button type="primary" :icon="View" @click="getPreviewReports(scope.row); drawer = true"
             style="margin-right: 10px;" circle />
         </el-tooltip>
         <el-tooltip content="下载报告" effect="light" placement="top">
@@ -58,25 +58,30 @@
       <el-row>
         <el-text class="mx-1">报告模板</el-text>
         <el-radio-group v-model="templateStyle" style="margin-left: 10px;">
-          <el-radio value="one">模板1</el-radio>
-          <el-radio value="two">模板2</el-radio>
-          <el-radio value="three">模板3</el-radio>
+          <el-radio :value="1">模板1</el-radio>
+          <el-radio :value="2">模板2</el-radio>
+          <el-radio :value="3">模板3</el-radio>
         </el-radio-group>
       </el-row>
-      <span v-for="(item, index) in 100000" :key="index">测试</span>
+      <PdfPreView :url="pdfPreviewUrl" />
     </el-drawer>
   </div>
 </template>
+
 <script lang="ts">
-import {defineComponent, ref, onMounted, computed} from 'vue';
+import {defineComponent, ref, onMounted, computed,watch} from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files, View } from '@element-plus/icons-vue'
 import type { ComponentSize, DrawerProps } from 'element-plus'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import service from '@/api';
+import PdfPreView from '@/components/PdfPreView.vue';
 export default defineComponent({
   name: 'ProjectGenerationComponent',
+  components:{
+    PdfPreView
+  },
   setup() {
     const smallScreen = ref(window.innerWidth < 768);
     let ProjectTableData = ref<Project[]>([])
@@ -86,13 +91,16 @@ export default defineComponent({
     const background = ref(false)
     const disabled = ref(false)
     const router = useRouter();
-    const templateStyle = ref('one')
+    const templateStyle = ref(1)
     const drawer = ref(false)
     const direction = ref<DrawerProps['direction']>('rtl')
     const queryType = ref()
     const totalItems=ref(0)
     const pageSize = ref(5);
     const currentPage = ref(1);
+    const pdfUrl=ref([])
+    const docxUrl=ref([])
+    const pdfPreviewUrl=ref()
     const options=ref([{
       label:'项目编号',
       value:'id'
@@ -155,14 +163,40 @@ export default defineComponent({
       searchProp.value = null;
       getProjects();
     }
-    function handlePreview(row: any) {
-      console.log('预览===>', row.id)
+    async function getPreviewReports(row: any) {
+      const data=await service.post('/report/review',{
+        id:row.id,
+        projectName:row.projectName
+      })
+      if(data){
+         pdfUrl.value = (data as unknown as { pdfs: [] }).pdfs;
+         //docxUrl.value=(data as unknown as { docs: [] }).docs;
+         if(templateStyle.value==1){
+          pdfPreviewUrl.value=pdfUrl.value[0]
+         }else if(templateStyle.value==2){
+          pdfPreviewUrl.value=pdfUrl.value[1]
+         }else if(templateStyle.value==3){
+          pdfPreviewUrl.value=pdfUrl.value[2]
+         }
+      }
     }
+    watch(
+            () => templateStyle.value,
+            () => {
+              if(templateStyle.value==1){
+          pdfPreviewUrl.value=pdfUrl.value[0]
+         }else if(templateStyle.value==2){
+          pdfPreviewUrl.value=pdfUrl.value[1]
+         }else if(templateStyle.value==3){
+          pdfPreviewUrl.value=pdfUrl.value[2]
+         }
+            }
+        );
     function downloadReport(row: any) {
       console.log('下载报告===>', row.id)
     }
     const handleClose = (done: () => void) => {
-      ElMessageBox.confirm('确定关闭预览？')
+      ElMessageBox.confirm('确定选择模板'+templateStyle.value+'?')
         .then(() => {
           done()
         })
@@ -170,6 +204,7 @@ export default defineComponent({
           // catch error
         })
     }
+   
 
     return {
       Document,
@@ -177,6 +212,8 @@ export default defineComponent({
       Search,
       RefreshLeft,
       View,
+      pdfUrl,
+      pdfPreviewUrl,
       ProjectTableData,
       searchProp,
       drawer,
@@ -195,7 +232,7 @@ export default defineComponent({
       pagedProjects,
       searchProject,
       reset,
-      handlePreview,
+      getPreviewReports,
       handleSizeChange,
       handleCurrentChange,
       handleClose,
