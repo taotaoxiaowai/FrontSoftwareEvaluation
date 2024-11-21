@@ -57,7 +57,7 @@
     <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="800"
     v-loading="loading"
     >
-    <div v-loading="loading" class="loading-container">
+    <div v-loading="loading" class="loading-container" >
       <el-row>
         <el-text class="mx-1">报告模板</el-text>
         <el-radio-group v-model="templateStyle" style="margin-left: 10px;">
