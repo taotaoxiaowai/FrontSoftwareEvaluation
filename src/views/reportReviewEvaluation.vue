@@ -61,7 +61,7 @@ import {defineComponent, ref, onMounted, computed} from 'vue';
 import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files } from '@element-plus/icons-vue'
-import {ComponentSize, DrawerProps, ElMessage,ElMessageBox} from 'element-plus'
+import {ComponentSize, DrawerProps, ElMessage,ElMessageBox,ElLoading} from 'element-plus'
 import service from '@/api';
 
 export default defineComponent({
@@ -97,10 +97,22 @@ export default defineComponent({
       getProjects()
     })
     async function getProjects() {
-      console.log('获取数据')
+      const loading = ElLoading.service({
+        lock: true,
+        text: '加载数据中',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
       const data = await service.get('/project/findReportsAll');
-      const projects = (data as unknown as { projects: Project[] }).projects;
-      ProjectTableData.value = projects
+     
+      if(data){
+        loading.close()
+        const projects = (data as unknown as { projects: Project[] }).projects;
+        ProjectTableData.value = projects
+      }else{
+        loading.close()
+      }
+      
+      
       totalItems.value=ProjectTableData.value.length
       console.log(totalItems)
     }

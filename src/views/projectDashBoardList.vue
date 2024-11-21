@@ -56,7 +56,7 @@ import { useRouter } from 'vue-router';
 import { Project } from '@/types/ProjectType'
 import { Search, RefreshLeft, Document, Files } from '@element-plus/icons-vue'
 import type { ComponentSize, DrawerProps } from 'element-plus'
-import {ElMessage} from 'element-plus'
+import {ElMessage,ElLoading} from 'element-plus'
 import service from '@/api';
 export default defineComponent({
     name: 'ProjectDashBoardListComponent',
@@ -92,9 +92,19 @@ export default defineComponent({
           getProjects()
         })
       async function getProjects() {
+        const loading = ElLoading.service({
+        lock: true,
+        text: '加载数据中',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
         const data = await service.get('/project/findPassProjects');
-        const projects = (data as unknown as { projects: Project[] }).projects;
-        ProjectTableData.value = projects
+       
+      if(data){const projects = (data as unknown as { projects: Project[] }).projects;
+      ProjectTableData.value = projects
+    loading.close()}else{
+loading.close()
+      }
+        
         totalItems.value=ProjectTableData.value.length
         console.log(totalItems)
       }

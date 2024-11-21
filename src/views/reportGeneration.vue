@@ -54,7 +54,10 @@
     </el-col>
   </el-row>
   <div class="demo-pagination-block">
-    <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="800">
+    <el-drawer v-model="drawer" title="报告预览" :direction="direction" :before-close="handleClose" :size="800"
+    v-loading="loading"
+    >
+    <div v-loading="loading" class="loading-container">
       <el-row>
         <el-text class="mx-1">报告模板</el-text>
         <el-radio-group v-model="templateStyle" style="margin-left: 10px;">
@@ -64,6 +67,7 @@
         </el-radio-group>
       </el-row>
       <PdfPreView :url="pdfPreviewUrl" />
+    </div>
     </el-drawer>
   </div>
 </template>
@@ -99,8 +103,8 @@ export default defineComponent({
     const pageSize = ref(5);
     const currentPage = ref(1);
     const pdfUrl = ref([])
-    const docxUrl = ref([])
     const pdfPreviewUrl = ref()
+    const loading=ref(true)
     const options = ref([{
       label: '项目编号',
       value: 'id'
@@ -116,13 +120,21 @@ export default defineComponent({
       getProjects()
     })
     async function getProjects() {
+      const loading = ElLoading.service({
+        lock: true,
+        text: '加载数据中',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
       const data = await service.get('/project/findEvaluatedAll');
-      if (data) {
-        const projects = (data as unknown as { projects: Project[] }).projects;
+      
+      if (data) {   
+     const projects = (data as unknown as { projects: Project[] }).projects;
         ProjectTableData.value = projects
-        totalItems.value = ProjectTableData.value.length
+        loading.close()
+      }else{
+        loading.close()
       }
-
+      totalItems.value = ProjectTableData.value.length
       console.log(totalItems)
     }
     const handleSizeChange = (val: number) => {
@@ -137,19 +149,29 @@ export default defineComponent({
       console.log(searchProp.value)
       if (queryType.value != null) {
         if (searchProp.value != null) {
+          const loading = ElLoading.service({
+        lock: true,
+        text: '加载数据中',
+        background: 'rgba(0, 0, 0, 0.7)',
+      })
           if (queryType.value == 'id') {
+            
             const data = await service.post('/project/findEvaluatedProjectsByCondition', { id: searchProp.value });
             if (data) {
+              loading.close()
               const projects = (data as unknown as { projects: Project[] }).projects;
               ProjectTableData.value = projects
             }
+            loading.close()
             totalItems.value = ProjectTableData.value.length
           } else if (queryType.value == 'name') {
             const data = await service.post('/project/findEvaluatedProjectsByCondition', { projectName: searchProp.value });
             if (data) {
+              
               const projects = (data as unknown as { projects: Project[] }).projects;
               ProjectTableData.value = projects
             }
+            loading.close()
             totalItems.value = ProjectTableData.value.length
           }
         } else {
@@ -168,17 +190,12 @@ export default defineComponent({
       getProjects();
     }
     async function getPreviewReports(row: any) {
-      /* const loading = ElLoading.service({
-        lock: true,
-        text: '加载数据中',
-        background: 'rgba(0, 0, 0, 0.7)',
-      }) */
+      
       const data = await service.post('/report/review', {
         id: row.id,
         projectName: row.projectName
       })
       if (data) {
-        //loading.close()
         pdfUrl.value = (data as unknown as { pdfs: [] }).pdfs;
         //docxUrl.value=(data as unknown as { docs: [] }).docs;
         if (templateStyle.value == 1) {
@@ -188,7 +205,9 @@ export default defineComponent({
         } else if (templateStyle.value == 3) {
           pdfPreviewUrl.value = pdfUrl.value[2]
         }
+       
       }
+      loading.value=false
     }
     watch(
       () => templateStyle.value,
@@ -220,14 +239,13 @@ export default defineComponent({
           // catch error
         })
     }
-
-
     return {
       Document,
       Files,
       Search,
       RefreshLeft,
       View,
+      loading,
       pdfUrl,
       pdfPreviewUrl,
       ProjectTableData,
@@ -285,5 +303,9 @@ h1 {
   align-items: center;
   font-size: 16px;
   /* 增加字体大小 */
+}
+.loading-container {
+  position: relative;
+  height: 100%;
 }
 </style>

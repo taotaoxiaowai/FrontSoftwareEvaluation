@@ -8,8 +8,7 @@
           </el-col>
         <el-col :span="12">
           <el-row>
-            <el-col><pie-chart-component v-if="isPieChartComponentVisual" :theme="theme" :id="projectId"/></el-col>
-            <el-col> <scatter-plot-component v-if="isScatterPlotComponentVisual" :theme="theme"  :id="projectId"/></el-col>
+            <pie-chart-component v-if="isPieChartComponentVisual" :theme="theme" :id="projectId"/>
           </el-row>
           <el-row><ProjectTimeline  v-if="isProjectTimelineVisual" :theme="theme"  :id="projectId"/></el-row>
         </el-col>
@@ -42,11 +41,7 @@
           <el-row style="align-items:center;">
             <el-col :span="14" style="font-size: small;"> <span>任务分配图</span></el-col>
             <el-col :span="10"><el-switch v-model="isPieChartComponentVisual" style="margin-left: 10px;" /></el-col>
-          </el-row>
-          <el-row style="align-items:center;">
-            <el-col :span="14" style="font-size: small;"> <span>功能点散点图</span></el-col>
-            <el-col :span="10"><el-switch v-model="isScatterPlotComponentVisual" style="margin-left: 10px;" /></el-col>
-          </el-row>
+          </el-row> 
           <el-row style="align-items:center;">
             <el-col :span="14" style="font-size: small;"> <span>项目进度时间轴</span></el-col>
             <el-col :span="10"><el-switch v-model="isProjectTimelineVisual" style="margin-left: 10px;" /></el-col>
@@ -63,7 +58,6 @@ import { Close } from '@element-plus/icons-vue'
 import AreaChartComponent from '@/components/AreaChart.vue';
 import HistogramChartComponent from '@/components/HistogramChart.vue'
 import PieChartComponent from '@/components/PieChart.vue'
-import ScatterPlotComponent from '@/components/ScatterPlot.vue'
 import ProjectTimeline from '@/components/TimeLine.vue'
 import { useRoute, useRouter } from 'vue-router';
 export default defineComponent({
@@ -72,7 +66,6 @@ export default defineComponent({
     AreaChartComponent,
     HistogramChartComponent,
     PieChartComponent,
-    ScatterPlotComponent,
     ProjectTimeline
   },
   setup() {
@@ -83,7 +76,6 @@ export default defineComponent({
     let isAreaChartComponentVisual = ref(false);
     let isHistogramChartComponentVisual = ref(false);
     let isPieChartComponentVisual = ref(false);
-    let isScatterPlotComponentVisual = ref(false);
     let isProjectTimelineVisual=ref(false)
     let bgColor=ref('#efe8e8')
     watch(
@@ -102,7 +94,6 @@ export default defineComponent({
       isAreaChartComponentVisual,
       isHistogramChartComponentVisual,
       isPieChartComponentVisual,
-      isScatterPlotComponentVisual,
       isProjectTimelineVisual,
       router
     };
