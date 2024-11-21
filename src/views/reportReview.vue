@@ -187,7 +187,7 @@ export default defineComponent({
     };
     function downloadFile(row: any) {
       const link = document.createElement("a");
-      link.href = "http://localhost:9000/report/download?id="+row.id; // 设置文件下载链接
+      link.href = "http://localhost:9000/report/downloadfile?id="+row.id; // 设置文件下载链接
       link.download = ""; // 可选，设置下载后的文件名
       document.body.appendChild(link); // 将链接添加到 DOM 中
       link.click(); // 触发点击事件

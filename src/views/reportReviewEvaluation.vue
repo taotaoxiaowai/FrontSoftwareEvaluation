@@ -118,7 +118,9 @@ export default defineComponent({
         const response = await service.post(`/report/downloadReturn`, { id: row.id });
         // 提取下载链接
         const downloadUrl = (response as unknown as { url: string }).url;
-        const isOk = (response as unknown as { isok: string }).isok;
+        const isOk = (response as unknown as { isOk: string }).isOk;
+        console.log(downloadUrl)
+        console.log(isOk)
         // 检查响应内容是否有效
         if (!response || !downloadUrl || !isOk) {
           throw new Error('未能成功获取下载链接');
